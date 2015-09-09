@@ -1,0 +1,12 @@
+TODO:
+- 
+
+FUTURE WORK:
+- Settings / Preferences
+- support for saving and printing
+- display more design info/parameters
+- move data to resource file?
+- calculate wire size using geometry calculations rather than table
+- verify parameters against manufacturer's data sheets
+- add more core types?
+- offer a command line mode or separate utility?

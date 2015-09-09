@@ -1,0 +1,10 @@
+Here are some test cases that can be used to do a sanity regression test.
+
+Type         Core Type Core Material Inductance Turns Wire Gauge
+------------ --------- ------------- ---------- ----- ----------
+Powered Iron T12       6             10uH       77    unknown
+Powered Iron T50       2             10uH       45    26
+Powered Iron T50       2             20uH       64    28
+Ferrite      FT-23     63/37         10mH       1125  unknown
+Ferrite      FT-37     43            10mH       154   unknown
+Ferrite      FT-37     43            20mH       218   unknown

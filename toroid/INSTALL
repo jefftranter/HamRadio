@@ -1,0 +1,4 @@
+This program requires Qt version 4.
+Run qmake to generate your platform-dependent make file.
+Then run the appropriate make program for your platform, e.g. make or
+gmake for Linux, nmake for Windows.
