@@ -3,7 +3,7 @@
 Class to encapsulate toroid calculations.
 
 Jeff Tranter <tranter@pobox.com>
-Copyright (C) 2009.
+Copyright (C) 2009-2015.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <math.h>
+#include <stdio.h>
 #include <QString>
 #include <QApplication>
 #include "Toroid.h"
@@ -351,4 +352,59 @@ int Toroid::maximumWireGauge(QString coreSize, int turns)
 
     // No data or no core large enough.
     return -1;
+}
+
+
+// Display a table of calculations. This can be compared to previous data for regression testing.
+void Toroid::printTestData()
+{
+    setCoreType(ferrite);
+    foreach (QString coreType, coreTypes()) {
+        foreach (QString coreMaterial, coreMaterials()) {
+            for (double L = 1; L < 100; L++) {
+                double al = calculateAl(coreType, coreMaterial);
+                if (al != -1) {
+                    long turns = calculateTurns(L, al);
+                    printf("%s %s %4.2f mH %ld turns\n", qPrintable(coreType), qPrintable(coreMaterial), L, turns);
+                }
+            }
+        }
+    }
+
+    foreach (QString coreType, coreTypes()) {
+        foreach (QString coreMaterial, coreMaterials()) {
+            for (long turns = 10; turns < 1000; turns += 10) {
+                double al = calculateAl(coreType, coreMaterial);
+                if (al != -1) {
+                    double L = calculateInductance(turns, al);
+                    printf("%s %s %4.2f mH %ld turns\n", qPrintable(coreType), qPrintable(coreMaterial), L, turns);
+                }
+            }
+        }
+    }
+
+    setCoreType(powderedIron);
+    foreach (QString coreType, coreTypes()) {
+        foreach (QString coreMaterial, coreMaterials()) {
+            for (double L = 1; L < 100; L++) {
+                double al = calculateAl(coreType, coreMaterial);
+                if (al != -1) {
+                    long turns = calculateTurns(L, al);
+                    printf("%s %s %4.2f uH %ld turns\n", qPrintable(coreType), qPrintable(coreMaterial), L, turns);
+                }
+            }
+        }
+    }
+
+    foreach (QString coreType, coreTypes()) {
+        foreach (QString coreMaterial, coreMaterials()) {
+            for (long turns = 10; turns < 1000; turns += 10) {
+                double al = calculateAl(coreType, coreMaterial);
+                if (al != -1) {
+                    double L = calculateInductance(turns, al);
+                    printf("%s %s %4.2f uH %ld turns\n", qPrintable(coreType), qPrintable(coreMaterial), L, turns);
+                }
+            }
+        }
+    }
 }

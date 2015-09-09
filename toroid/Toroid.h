@@ -6,7 +6,7 @@
  Class to encapsulate toroid calculations.
 
  Jeff Tranter <tranter@pobox.com>
- Copyright (C) 2009.
+ Copyright (C) 2009-2015.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ public:
     int maximumWireGauge(QString coreSize, int turns);
     core_t coreType() { return m_coreType; }
     void setCoreType(core_t newType) { m_coreType = newType; }
+    void printTestData();
 
 private:
     void initializeAlTable();

@@ -1,0 +1,10 @@
+11 Sep 2009  Version 0.1
+- first public release
+- uploaded to qt-apps.org
+
+01 Sep 2009  Version 0.2
+- added this CHANGELOG file
+- added --test option for displaying regression test data
+
+09 Sep 2015  Version 0.3
+- port to Qt version 5

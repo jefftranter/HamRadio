@@ -2,7 +2,7 @@
 
 Toroid design program.
 Jeff Tranter <tranter@pobox.com>
-Copyright (C) 2009.
+Copyright (C) 2009-2015.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -100,9 +100,9 @@ void ToroidWindow::about()
             this,
             tr("About Toroid Designer"),
             tr(
-    "Toroidal inductor design program version 0.1\n"
+    "Toroidal inductor design program version 0.3\n"
     "By Jeff Tranter <tranter@pobox.com>\n"
-    "Copyright (C) 2009 Jeff Tranter\n"
+    "Copyright (C) 2009-2015 Jeff Tranter\n"
     "\n"
     "This program is free software: you can redistribute it and/or modify\n"
     "it under the terms of the GNU General Public License as published by\n"
