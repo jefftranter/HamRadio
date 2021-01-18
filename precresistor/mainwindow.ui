@@ -347,7 +347,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="precresistor.qrc">:/images/circuit.png</pixmap>
+       <pixmap resource="precresistor.qrc">:/images/circuit-s2.png</pixmap>
       </property>
      </widget>
     </item>
