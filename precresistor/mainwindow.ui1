@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>464</width>
+    <height>373</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Precision Resistor Calculator</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label1">
+        <property name="text">
+         <string>Mode:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="modeComboBox">
+        <item>
+         <property name="text">
+          <string>Series (2)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Series (3)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Parallel (2)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Parallel (3)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Series/Parallel (3)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout2">
+      <item>
+       <widget class="QLabel" name="label2">
+        <property name="text">
+         <string>Standard Values:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="standardValuesComboBox">
+        <item>
+         <property name="text">
+          <string>E6 (20%)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>E12 (10%)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>E24 (5%)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>E48 (2%)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>E96 (1%)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>E192 (0.5%)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout3">
+      <item>
+       <widget class="QLabel" name="label3">
+        <property name="text">
+         <string>Desired Value:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="desiredValueSpinBox"/>
+      </item>
+      <item>
+       <widget class="QComboBox" name="resistanceComboBox">
+        <item>
+         <property name="text">
+          <string>Ohms</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Kilohms</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Megohms</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout5">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout4">
+          <item>
+           <widget class="QLabel" name="label10">
+            <property name="text">
+             <string>Actual Value:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="actualValueLabel">
+            <property name="text">
+             <string>889 Ohms (+0.05%)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label4">
+            <property name="text">
+             <string>R1:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="r1Label">
+            <property name="text">
+             <string>820 Ohms</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label5">
+            <property name="text">
+             <string>R2:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="r2Label">
+            <property name="text">
+             <string>68 Ohms</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label6">
+            <property name="text">
+             <string>R3:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="r3Label">
+            <property name="text">
+             <string>1 Ohm</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="imageLabel">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="pixmap">
+         <pixmap>circuit.png</pixmap>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>464</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

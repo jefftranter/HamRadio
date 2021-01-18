@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>524</width>
+    <height>314</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Precision Resistor Calculator</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="modeLabel">
+          <property name="text">
+           <string>Mode:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="modeComboBox">
+          <property name="toolTip">
+           <string>Select desired type of circuit.</string>
+          </property>
+          <item>
+           <property name="text">
+            <string>Series (2)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Series (3)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Parallel (2)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Parallel (3)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Series/Parallel (3)</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout2">
+        <item>
+         <widget class="QLabel" name="standardValuesLabel">
+          <property name="text">
+           <string>Standard Values:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="standardValuesComboBox">
+          <property name="toolTip">
+           <string>Select desired resistor series.</string>
+          </property>
+          <item>
+           <property name="text">
+            <string>E6 (20%)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>E12 (10%)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>E24 (5%)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>E48 (2%)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>E96 (1%)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>E192 (0.5%)</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout3">
+        <item>
+         <widget class="QLabel" name="desiredValueLabel">
+          <property name="text">
+           <string>Desired Value:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="desiredValueSpinBox">
+          <property name="toolTip">
+           <string>Enter desired resistance value.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="desiredResistanceComboBox">
+          <item>
+           <property name="text">
+            <string>Ohms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Kilohms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Megohms</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="r1Label">
+          <property name="text">
+           <string>R1:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+        </item>
+        <item row="0" column="2">
+         <widget class="QComboBox" name="r1ResistanceComboBox">
+          <item>
+           <property name="text">
+            <string>Ohms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Kilohms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Megohms</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QCheckBox" name="r1CheckBox">
+          <property name="toolTip">
+           <string>Check to calculate value, uncheck to enter it.</string>
+          </property>
+          <property name="text">
+           <string>Calculate</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="r2Label">
+          <property name="text">
+           <string>R2:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+        </item>
+        <item row="1" column="2">
+         <widget class="QComboBox" name="r2ResistanceComboBox">
+          <item>
+           <property name="text">
+            <string>Ohms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Kilohms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Megohms</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QCheckBox" name="checkBox_2">
+          <property name="toolTip">
+           <string>Check to calculate value, uncheck to enter it.</string>
+          </property>
+          <property name="text">
+           <string>Calculate</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="r3Label">
+          <property name="text">
+           <string>R3:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+        </item>
+        <item row="2" column="2">
+         <widget class="QComboBox" name="r3ResistanceComboBox">
+          <item>
+           <property name="text">
+            <string>Ohms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Kilohms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Megohms</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QCheckBox" name="checkBox_3">
+          <property name="toolTip">
+           <string>Check to calculate value, uncheck to enter it.</string>
+          </property>
+          <property name="text">
+           <string>Calculate</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout4">
+        <item>
+         <widget class="QLabel" name="label10">
+          <property name="text">
+           <string>&lt;b&gt;Actual Value:&lt;/b&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="actualValueLabel">
+          <property name="text">
+           <string>&lt;b&gt;889 Ohms (+0.05%)&lt;/b&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="calculateButton">
+          <property name="toolTip">
+           <string>Click to calculate best design.</string>
+          </property>
+          <property name="text">
+           <string>&amp;Calculate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="quitButton">
+          <property name="toolTip">
+           <string>Click to quit application.</string>
+          </property>
+          <property name="text">
+           <string>&amp;Quit</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="CircuitLabel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="precresistor.qrc">:/images/circuit.png</pixmap>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>524</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionCalculate"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="actionCalculate">
+   <property name="text">
+    <string>&amp;Calculate</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="precresistor.qrc"/>
+ </resources>
+ <connections/>
+</ui>
