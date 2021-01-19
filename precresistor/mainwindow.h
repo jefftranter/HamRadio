@@ -14,6 +14,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void setMode(int mode);
+    void calculate();
+    int multiplier(int units);
 
 private:
     Ui::MainWindow *ui;

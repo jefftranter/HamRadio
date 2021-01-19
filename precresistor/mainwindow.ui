@@ -56,6 +56,11 @@
             <string>Series/Parallel (3)</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>Parallel/Series (3)</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>
@@ -122,6 +127,9 @@
           <property name="toolTip">
            <string>Enter desired resistance value.</string>
           </property>
+          <property name="decimals">
+           <number>4</number>
+          </property>
          </widget>
         </item>
         <item>
@@ -155,7 +163,11 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+         <widget class="QDoubleSpinBox" name="r1SpinBox">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
         </item>
         <item row="0" column="2">
          <widget class="QComboBox" name="r1ResistanceComboBox">
@@ -197,7 +209,11 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+         <widget class="QDoubleSpinBox" name="r2SpinBox">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
         </item>
         <item row="1" column="2">
          <widget class="QComboBox" name="r2ResistanceComboBox">
@@ -219,7 +235,7 @@
          </widget>
         </item>
         <item row="1" column="3">
-         <widget class="QCheckBox" name="checkBox_2">
+         <widget class="QCheckBox" name="r2CheckBox">
           <property name="toolTip">
            <string>Check to calculate value, uncheck to enter it.</string>
           </property>
@@ -239,7 +255,11 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+         <widget class="QDoubleSpinBox" name="r3SpinBox">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
         </item>
         <item row="2" column="2">
          <widget class="QComboBox" name="r3ResistanceComboBox">
@@ -261,7 +281,7 @@
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="QCheckBox" name="checkBox_3">
+         <widget class="QCheckBox" name="r3CheckBox">
           <property name="toolTip">
            <string>Check to calculate value, uncheck to enter it.</string>
           </property>
@@ -333,7 +353,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="CircuitLabel">
+     <widget class="QLabel" name="circuitLabel">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -359,7 +379,7 @@
      <x>0</x>
      <y>0</y>
      <width>524</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
