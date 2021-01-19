@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <math.h>
+#include <QString>
 #include <QDebug>
 
 
@@ -52,13 +53,15 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->standardValuesComboBox->setCurrentIndex(1);
+
     connect(ui->actionQuit, &QAction::triggered, qApp, &QApplication::quit);
     connect(ui->quitButton, &QPushButton::clicked, qApp, &QApplication::quit);
     connect(ui->actionCalculate, &QAction::triggered, this, &MainWindow::calculate);
     connect(ui->calculateButton, &QPushButton::clicked, this, &MainWindow::calculate);
     connect(ui->modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::setMode);
 
+    ui->modeComboBox->setCurrentIndex(0);
+    ui->standardValuesComboBox->setCurrentIndex(1);
 }
 
 MainWindow::~MainWindow()
@@ -134,7 +137,7 @@ void MainWindow::calculate()
                         bestR1 = r1;
                         bestR2 = r2;
                         bestDiff = diff;
-                        qDebug() << "Best so far is" << r1 << "+" << r2;
+                        //qDebug() << "Best so far is" << r1 << "+" << r2;
                     }
                 }
             }
@@ -143,4 +146,11 @@ void MainWindow::calculate()
 
     qDebug() << "Best R1 =" << bestR1;
     qDebug() << "Best R2 =" << bestR2;
+
+    ui->r1SpinBox->setValue(bestR1);
+    ui->r2SpinBox->setValue(bestR2);
+    QString s = QString::number(bestR1 + bestR2) + " Ohms (" + QString::number(100 * bestDiff / (bestR1 + bestR2)) + "%)";
+    ui->actualValueLabel->setText(s);
+
+
 }
