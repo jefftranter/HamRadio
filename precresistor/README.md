@@ -3,6 +3,13 @@ using several standard values in parallel or series.
 
 Requires the Qt framework.
 
-Builds using cmake.
+You can build and run it with the Qt Creator IDE or manually using
+commands like the following (on Linux):
+
+    mkdir build
+    cd build
+    cmake ..
+    make
+    ./precresistor
 
 Still a work in progress.

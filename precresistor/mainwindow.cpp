@@ -7,21 +7,21 @@
 
 // List of standard resistor values.
 // See https://eepower.com/resistor-guide/resistor-standards-and-codes/resistor-values/
-const int e6Series[] = { 10, 15, 22, 33, 47, 68 };
+const int e6Series[] = { 0, 10, 15, 22, 33, 47, 68 };
 
-const int e12Series[] = { 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82 };
+const int e12Series[] = { 0, 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82 };
 
-const int e24Series[] = { 10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30,
+const int e24Series[] = { 0, 10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30,
                           33, 36, 39, 43, 47, 51, 56, 62, 68, 75, 82, 91 };
 
 const int e24Decades[] = { 0, 1, 2, 3, 4, 5, 6 };
 
-const int e48Series[] = { 100, 105, 110, 115, 121, 127, 133, 140, 147, 154, 162, 169,
+const int e48Series[] = { 0, 100, 105, 110, 115, 121, 127, 133, 140, 147, 154, 162, 169,
                           178, 187, 196, 205, 215, 226, 237, 249, 261, 274, 287, 301,
                           316, 332, 348, 365, 383, 402, 422, 442, 464, 487, 511, 536,
                           562, 590, 619, 649, 681, 715, 750, 787, 825, 866, 909, 953 };
 
-const int e96Series[] = { 100, 102, 105, 107, 110, 113, 115, 118, 121, 124, 127, 130,
+const int e96Series[] = { 0, 100, 102, 105, 107, 110, 113, 115, 118, 121, 124, 127, 130,
                           133, 137, 140, 143, 147, 150, 154, 158, 162, 165, 169, 174,
                           178, 182, 187, 191, 196, 200, 205, 210, 215, 221, 226, 232,
                           237, 243, 249, 255, 261, 267, 274, 280, 287, 294, 301, 309,
@@ -30,7 +30,7 @@ const int e96Series[] = { 100, 102, 105, 107, 110, 113, 115, 118, 121, 124, 127,
                           562, 576, 590, 604, 619, 634, 649, 665, 681, 698, 715, 732,
                           750, 768, 787, 806, 825, 845, 866, 887, 909, 931, 953, 976 };
 
-const int e192Series[] = { 100, 101, 102, 104, 105, 106, 107, 109, 110, 111, 113, 114,
+const int e192Series[] = { 0, 100, 101, 102, 104, 105, 106, 107, 109, 110, 111, 113, 114,
                            115, 117, 118, 120, 121, 123, 124, 126, 127, 129, 130, 132,
                            133, 135, 137, 138, 140, 142, 143, 145, 147, 149, 150, 152,
                            154, 156, 158, 160, 162, 164, 165, 167, 169, 172, 174, 176,
@@ -61,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::setMode);
 
     ui->modeComboBox->setCurrentIndex(0);
+    setMode(0);
     ui->standardValuesComboBox->setCurrentIndex(1);
 }
 
@@ -125,12 +126,13 @@ void MainWindow::calculate()
     qDebug() << "Desired value is" << desiredValue << "Ohms.";
 
   // Calculate by brute force.
+    int len = sizeof(e24Series) / sizeof(e24Series[0]);
     for (int decade1 = -1; decade1 <= 6; decade1++) {
-        for (int i1 = 0; i1 < 24; i1++) {
+        for (int i1 = 0; i1 < len; i1++) {
             for (int decade2 = -1; decade2 <= 6; decade2++) {
-                for (int i2 = 0; i2 < 24; i2++) {
+                for (int i2 = 0; i2 < len; i2++) {
                     double r1 = e24Series[i1] * exp10(decade1);
-                    double r2 = e24Series[i2] *exp10(decade2);
+                    double r2 = e24Series[i2] * exp10(decade2);
                     double value = r1 + r2;
                     double diff = fabs(desiredValue - value);
                     if (diff < bestDiff) {
@@ -147,10 +149,49 @@ void MainWindow::calculate()
     qDebug() << "Best R1 =" << bestR1;
     qDebug() << "Best R2 =" << bestR2;
 
-    ui->r1SpinBox->setValue(bestR1);
-    ui->r2SpinBox->setValue(bestR2);
-    QString s = QString::number(bestR1 + bestR2) + " Ohms (" + QString::number(100 * bestDiff / (bestR1 + bestR2)) + "%)";
+    if (bestR1 > 1e6) {
+        ui->r1ResistanceComboBox->setCurrentIndex(2); // Megohms
+        ui->r1SpinBox->setValue(bestR1 / 1e6);
+    } else if (bestR1 > 1e3) {
+        ui->r1ResistanceComboBox->setCurrentIndex(1); // Kilohms
+        ui->r1SpinBox->setValue(bestR1 / 1e3);
+    } else {
+        ui->r1ResistanceComboBox->setCurrentIndex(0); // Ohms
+        ui->r1SpinBox->setValue(bestR1);
+    }
+
+    if (bestR2 > 1e6) {
+        ui->r2ResistanceComboBox->setCurrentIndex(2); // Megohms
+        ui->r2SpinBox->setValue(bestR2 / 1e6);
+    } else if (bestR2 > 1e3) {
+        ui->r2ResistanceComboBox->setCurrentIndex(1); // Kilohms
+        ui->r2SpinBox->setValue(bestR2 / 1e3);
+    } else {
+        ui->r2ResistanceComboBox->setCurrentIndex(0); // Ohms
+        ui->r2SpinBox->setValue(bestR2);
+    }
+
+    double value = bestR1 + bestR2;
+    double error = (value - desiredValue) / desiredValue;
+    QString s;
+    if (value > 1e6) {
+        s = QString::number(value / 1e6) + tr(" Megohms (") + QString::number(100 * error) + tr("%)");
+    } else if (value > 1e3) {
+        s = QString::number(value / 1e3) + tr(" Kilohms (") + QString::number(100 * error) + tr("%)");
+    } else {
+        s = QString::number(value) + tr(" Ohms (") + QString::number(100 * error) + tr("%)");
+    }
     ui->actualValueLabel->setText(s);
-
-
 }
+
+/*
+
+Standard values in E12 (10%) series:
+0, 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82
+
+Standard values in E24 (5%) series:
+0, 10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30, 33, 36, 39, 43, 47, 51, 56, 62, 68, 75, 82, 91.
+
+etc..
+
+*/
