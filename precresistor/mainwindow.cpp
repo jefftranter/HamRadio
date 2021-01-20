@@ -129,6 +129,8 @@ void MainWindow::calculate() {
   double bestR1 = -1;
   double bestR2 = -1;
   double bestDiff = 1e6;
+  const int *series = nullptr;
+  int size = 0;
 
   if (desiredValue > 100e6) {
     QMessageBox::warning(this, tr("Out of Range"),
@@ -137,16 +139,43 @@ void MainWindow::calculate() {
     return;
   }
 
+  // TODO: Below code is common with Info, refactor.
+  switch (ui->standardValuesComboBox->currentIndex()) {
+  case 0:
+    series = e6Series;
+    size = sizeof(e6Series) / sizeof(e6Series[0]);
+    break;
+  case 1:
+    series = e12Series;
+    size = sizeof(e12Series) / sizeof(e12Series[0]);
+    break;
+  case 2:
+    series = e24Series;
+    size = sizeof(e24Series) / sizeof(e24Series[0]);
+    break;
+  case 3:
+    series = e48Series;
+    size = sizeof(e48Series) / sizeof(e48Series[0]);
+    break;
+  case 4:
+    series = e96Series;
+    size = sizeof(e96Series) / sizeof(e96Series[0]);
+    break;
+  case 5:
+    series = e192Series;
+    size = sizeof(e192Series) / sizeof(e192Series[0]);
+    break;
+  }
+
   // qDebug() << "Desired value is" << desiredValue << "Ohms.";
 
   // Calculate by brute force.
-  int len = sizeof(e24Series) / sizeof(e24Series[0]);
   for (int decade1 = firstDecade; decade1 <= lastDecade; decade1++) {
-    for (int i1 = 0; i1 < len; i1++) {
+    for (int i1 = 0; i1 < size; i1++) {
       for (int decade2 = firstDecade; decade2 <= lastDecade; decade2++) {
-        for (int i2 = 0; i2 < len; i2++) {
-          double r1 = e24Series[i1] * exp10(decade1);
-          double r2 = e24Series[i2] * exp10(decade2);
+        for (int i2 = 0; i2 < size; i2++) {
+          double r1 = series[i1] * exp10(decade1);
+          double r2 = series[i2] * exp10(decade2);
           double value = r1 + r2;
           double diff = fabs(desiredValue - value);
           if (diff < bestDiff) {
