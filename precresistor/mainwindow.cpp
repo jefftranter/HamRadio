@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include <QDebug>
 #include <QString>
+#include <QMessageBox>
 #include <math.h>
 
 // List of standard resistor values.
@@ -54,14 +55,19 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->quitButton, &QPushButton::clicked, qApp, &QApplication::quit);
   connect(ui->actionCalculate, &QAction::triggered, this,
           &MainWindow::calculate);
+  connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::info);
+  connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
+
   connect(ui->calculateButton, &QPushButton::clicked, this,
           &MainWindow::calculate);
+  connect(ui->infoButton, &QPushButton::clicked, this, &MainWindow::info);
   connect(ui->modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &MainWindow::setMode);
 
   ui->modeComboBox->setCurrentIndex(0);
   setMode(0);
   ui->standardValuesComboBox->setCurrentIndex(1);
+  calculate();
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -123,7 +129,7 @@ void MainWindow::calculate() {
   double bestR2 = -1;
   double bestDiff = 1e6;
 
-  qDebug() << "Desired value is" << desiredValue << "Ohms.";
+  //qDebug() << "Desired value is" << desiredValue << "Ohms.";
 
   // Calculate by brute force.
   int len = sizeof(e24Series) / sizeof(e24Series[0]);
@@ -146,8 +152,8 @@ void MainWindow::calculate() {
     }
   }
 
-  qDebug() << "Best R1 =" << bestR1;
-  qDebug() << "Best R2 =" << bestR2;
+  //qDebug() << "Best R1 =" << bestR1;
+  //qDebug() << "Best R2 =" << bestR2;
 
   if (bestR1 > 1e6) {
     ui->r1ResistanceComboBox->setCurrentIndex(2); // Megohms
@@ -175,27 +181,84 @@ void MainWindow::calculate() {
   double error = (value - desiredValue) / desiredValue;
   QString s;
   if (value > 1e6) {
-    s = QString::number(value / 1e6) + tr(" Megohms (") +
-        QString::number(100 * error) + tr("%)");
+    s = tr("<b>") + QString::number(value / 1e6) + tr(" Megohms");
   } else if (value > 1e3) {
-    s = QString::number(value / 1e3) + tr(" Kilohms (") +
-        QString::number(100 * error) + tr("%)");
+    s = tr("<b>") + QString::number(value / 1e3) + tr(" Kilohms");
   } else {
-    s = QString::number(value) + tr(" Ohms (") + QString::number(100 * error) +
-        tr("%)");
+    s = tr("<b>") + QString::number(value) + tr(" Ohms");
   }
+  s += tr(" (error ") + QString::number(100 * error, 'g', 2) + tr("%)</b>");
   ui->actualValueLabel->setText(s);
 }
 
-/*
 
-Standard values in E12 (10%) series:
-0, 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82
+void MainWindow::info()
+{
+    QString text;
+    const int *series;
+    int size;
 
-Standard values in E24 (5%) series:
-0, 10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30, 33, 36, 39, 43, 47, 51, 56,
-62, 68, 75, 82, 91.
+    switch(ui->standardValuesComboBox->currentIndex())
+    {
+    case 0:
+        text = "Standard resistor values in E6 (20%) series:\n\n";
+        series = e6Series;
+        size = sizeof(e6Series) / sizeof(e6Series[0]);
+        break;
+    case 1:
+        text = "Standard resistor values in E12 (10%) series:\n\n";
+        series = e12Series;
+        size = sizeof(e12Series) / sizeof(e12Series[0]);
+        break;
+    case 2:
+        text = "Standard resistor values in E24 (5%) series:\n\n";
+        series = e24Series;
+        size = sizeof(e24Series) / sizeof(e24Series[0]);
+        break;
+    case 3:
+        text = "Standard resistor values in E48 (2%) series:\n\n";
+        series = e48Series;
+        size = sizeof(e48Series) / sizeof(e48Series[0]);
+        break;
+    case 4:
+        text = "Standard resistor values in E96 (1%) series:\n\n";
+        series = e96Series;
+        size = sizeof(e96Series) / sizeof(e96Series[0]);
+        break;
+    case 5:
+        text = "Standard resistor values in E192 (0.5%) series:\n\n";
+        series = e192Series;
+        size = sizeof(e192Series) / sizeof(e192Series[0]);
+        break;
+    }
 
-etc..
+    for (int i = 0; i < size; i++) {
+        text += QString::number(series[i]);
+        if (i == 0 || i % 12) {
+            text += " ";
+        } else {
+            text += "\n";
+        }
+    }
 
-*/
+    QMessageBox::information(this, tr("Info"), text);
+}
+
+void MainWindow::about()
+{
+    QMessageBox::about(
+                       this,
+                       tr("About Precresistor"),
+                       tr("Precision Resistor application by Jeff Tranter.\n\n" \
+                          "Copyright (C) 2021 by Jeff Tranter <tranter@pobox.com>.\n\n" \
+                          "Licensed under the Apache License, Version 2.0 (the \"License\");\n" \
+                          "you may not use this file except in compliance with the License.\n" \
+                          "You may obtain a copy of the License at\n\n" \
+                          "  http://www.apache.org/licenses/LICENSE-2.0\n\n" \
+                          "Unless required by applicable law or agreed to in writing, software\n" \
+                          "distributed under the License is distributed on an \"AS IS\" BASIS,\n" \
+                          "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" \
+                          "See the License for the specific language governing permissions and\n" \
+                          "limitations under the License.\n")
+                       );
+}

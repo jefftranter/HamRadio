@@ -18,6 +18,8 @@ public:
   void setMode(int mode);
   void calculate();
   int multiplier(int units);
+  void info();
+  void about();
 
 private:
   Ui::MainWindow *ui;

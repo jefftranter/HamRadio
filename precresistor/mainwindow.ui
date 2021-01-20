@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>524</width>
-    <height>314</height>
+    <width>533</width>
+    <height>296</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -322,7 +322,7 @@
         <item>
          <widget class="QLabel" name="actualValueLabel">
           <property name="text">
-           <string>&lt;b&gt;889 Ohms (+0.05%)&lt;/b&gt;</string>
+           <string>n/a</string>
           </property>
          </widget>
         </item>
@@ -341,17 +341,14 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QPushButton" name="infoButton">
+          <property name="toolTip">
+           <string>Click to show information.</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
+          <property name="text">
+           <string>&amp;Info</string>
           </property>
-         </spacer>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="quitButton">
@@ -393,7 +390,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>524</width>
+     <width>533</width>
      <height>20</height>
     </rect>
    </property>
@@ -402,6 +399,8 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionCalculate"/>
+    <addaction name="actionInfo"/>
+    <addaction name="actionAbout"/>
     <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuFile"/>
@@ -415,6 +414,16 @@
   <action name="actionCalculate">
    <property name="text">
     <string>&amp;Calculate</string>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>&amp;Info</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>&amp;About</string>
    </property>
   </action>
  </widget>
