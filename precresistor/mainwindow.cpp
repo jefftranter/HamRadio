@@ -232,9 +232,9 @@ void MainWindow::info()
         break;
     }
 
-    for (int i = 0; i < size; i++) {
+    for (int i = 1; i < size; i++) {
         text += QString::number(series[i]);
-        if (i == 0 || i % 12) {
+        if (i % 12) {
             text += " ";
         } else {
             text += "\n";
