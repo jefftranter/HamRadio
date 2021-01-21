@@ -45,8 +45,28 @@ const int e192Series[] = {
     715, 723, 732, 741, 750, 759, 768, 777, 787, 796, 806, 816, 825, 835, 845,
     856, 866, 876, 887, 898, 909, 920, 931, 942, 953, 965, 976, 988};
 
+// Decade ranges
 const int firstDecade = -1;
 const int lastDecade = 6;
+
+// Constants for combobox values
+const int OHMS = 0;
+const int KILOHMS = 1;
+const int MEGOHMS = 2;
+
+const int E6 = 0;
+const int E12 = 1;
+const int E24 = 2;
+const int E48 = 3;
+const int E96 = 4;
+const int E192 = 5;
+
+const int S2 = 0;
+const int S3 = 1;
+const int P2 = 2;
+const int P3 = 3;
+const int SP3A = 4;
+const int SP3B = 5;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -67,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   ui->modeComboBox->setCurrentIndex(0);
   setMode(0);
-  ui->standardValuesComboBox->setCurrentIndex(1);
+  ui->standardValuesComboBox->setCurrentIndex(E12);
   calculate();
 }
 
@@ -75,32 +95,32 @@ MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::setMode(int mode) {
   switch (mode) {
-  case 0:
+  case S2:
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-s2.png")));
     ui->r3SpinBox->setEnabled(false);
     break;
-  case 1:
+  case S3:
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-s3.png")));
     ui->r3SpinBox->setEnabled(true);
     break;
-  case 2:
+  case P2:
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-p2.png")));
     ui->r3SpinBox->setEnabled(false);
     break;
-  case 3:
+  case P3:
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-p3.png")));
     ui->r3SpinBox->setEnabled(true);
     break;
-  case 4:
+  case SP3A:
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-sp3a.png")));
     ui->r3SpinBox->setEnabled(true);
     break;
-  case 5:
+  case SP3B:
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-sp3b.png")));
     ui->r3SpinBox->setEnabled(true);
@@ -111,12 +131,12 @@ void MainWindow::setMode(int mode) {
 // Return value multiplier based on units in combobox.
 int MainWindow::multiplier(int units) {
   switch (units) {
-  case 0: // Ohms
+  case OHMS:
     return 1;
-  case 1: // Kilohms
-    return 1000;
-  case 2: // Megohms
-    return 1000000;
+  case KILOHMS:
+    return 1e3;
+  case MEGOHMS:
+    return 1e6;
   default:
     return -1;
   }
@@ -128,7 +148,7 @@ void MainWindow::calculate() {
       multiplier(ui->desiredResistanceComboBox->currentIndex());
   double bestR1 = -1;
   double bestR2 = -1;
-  double bestDiff = 1e6;
+  double bestDiff = 100e6;
   const int *series = nullptr;
   int size = 0;
 
@@ -141,27 +161,27 @@ void MainWindow::calculate() {
 
   // TODO: Below code is common with Info, refactor.
   switch (ui->standardValuesComboBox->currentIndex()) {
-  case 0:
+  case E6:
     series = e6Series;
     size = sizeof(e6Series) / sizeof(e6Series[0]);
     break;
-  case 1:
+  case E12:
     series = e12Series;
     size = sizeof(e12Series) / sizeof(e12Series[0]);
     break;
-  case 2:
+  case E24:
     series = e24Series;
     size = sizeof(e24Series) / sizeof(e24Series[0]);
     break;
-  case 3:
+  case E48:
     series = e48Series;
     size = sizeof(e48Series) / sizeof(e48Series[0]);
     break;
-  case 4:
+  case E96:
     series = e96Series;
     size = sizeof(e96Series) / sizeof(e96Series[0]);
     break;
-  case 5:
+  case E192:
     series = e192Series;
     size = sizeof(e192Series) / sizeof(e192Series[0]);
     break;
@@ -193,24 +213,24 @@ void MainWindow::calculate() {
   // qDebug() << "Best R2 =" << bestR2;
 
   if (bestR1 > 1e6) {
-    ui->r1ResistanceComboBox->setCurrentIndex(2); // Megohms
+    ui->r1ResistanceComboBox->setCurrentIndex(MEGOHMS);
     ui->r1SpinBox->setValue(bestR1 / 1e6);
   } else if (bestR1 > 1e3) {
-    ui->r1ResistanceComboBox->setCurrentIndex(1); // Kilohms
+    ui->r1ResistanceComboBox->setCurrentIndex(KILOHMS);
     ui->r1SpinBox->setValue(bestR1 / 1e3);
   } else {
-    ui->r1ResistanceComboBox->setCurrentIndex(0); // Ohms
+    ui->r1ResistanceComboBox->setCurrentIndex(OHMS);
     ui->r1SpinBox->setValue(bestR1);
   }
 
   if (bestR2 > 1e6) {
-    ui->r2ResistanceComboBox->setCurrentIndex(2); // Megohms
+    ui->r2ResistanceComboBox->setCurrentIndex(MEGOHMS);
     ui->r2SpinBox->setValue(bestR2 / 1e6);
   } else if (bestR2 > 1e3) {
-    ui->r2ResistanceComboBox->setCurrentIndex(1); // Kilohms
+    ui->r2ResistanceComboBox->setCurrentIndex(KILOHMS);
     ui->r2SpinBox->setValue(bestR2 / 1e3);
   } else {
-    ui->r2ResistanceComboBox->setCurrentIndex(0); // Ohms
+    ui->r2ResistanceComboBox->setCurrentIndex(OHMS);
     ui->r2SpinBox->setValue(bestR2);
   }
 
@@ -234,32 +254,32 @@ void MainWindow::info() {
   int size = 0;
 
   switch (ui->standardValuesComboBox->currentIndex()) {
-  case 0:
+  case E6:
     text = tr("Standard resistor values in E6 (20%) series:\n\n");
     series = e6Series;
     size = sizeof(e6Series) / sizeof(e6Series[0]);
     break;
-  case 1:
+  case E12:
     text = tr("Standard resistor values in E12 (10%) series:\n\n");
     series = e12Series;
     size = sizeof(e12Series) / sizeof(e12Series[0]);
     break;
-  case 2:
+  case E24:
     text = tr("Standard resistor values in E24 (5%) series:\n\n");
     series = e24Series;
     size = sizeof(e24Series) / sizeof(e24Series[0]);
     break;
-  case 3:
+  case E48:
     text = tr("Standard resistor values in E48 (2%) series:\n\n");
     series = e48Series;
     size = sizeof(e48Series) / sizeof(e48Series[0]);
     break;
-  case 4:
+  case E96:
     text = tr("Standard resistor values in E96 (1%) series:\n\n");
     series = e96Series;
     size = sizeof(e96Series) / sizeof(e96Series[0]);
     break;
-  case 5:
+  case E192:
     text = tr("Standard resistor values in E192 (0.5%) series:\n\n");
     series = e192Series;
     size = sizeof(e192Series) / sizeof(e192Series[0]);
