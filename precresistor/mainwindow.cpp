@@ -45,10 +45,6 @@ const int e192Series[] = {
     715, 723, 732, 741, 750, 759, 768, 777, 787, 796, 806, 816, 825, 835, 845,
     856, 866, 876, 887, 898, 909, 920, 931, 942, 953, 965, 976, 988};
 
-// Decade ranges
-const int firstDecade = -1;
-const int lastDecade = 6;
-
 // Constants for combobox values
 const int OHMS = 0;
 const int KILOHMS = 1;
@@ -148,9 +144,12 @@ void MainWindow::calculate() {
       multiplier(ui->desiredResistanceComboBox->currentIndex());
   double bestR1 = -1;
   double bestR2 = -1;
+  double bestR3 = -1;
   double bestDiff = 100e6;
   const int *series = nullptr;
   int size = 0;
+  int firstDecade = 0;
+  int lastDecade = 0;
 
   if (desiredValue > 100e6) {
     QMessageBox::warning(this, tr("Out of Range"),
@@ -164,53 +163,84 @@ void MainWindow::calculate() {
   case E6:
     series = e6Series;
     size = sizeof(e6Series) / sizeof(e6Series[0]);
+    firstDecade = -1;
+    lastDecade = 6;
     break;
   case E12:
     series = e12Series;
     size = sizeof(e12Series) / sizeof(e12Series[0]);
+    firstDecade = -1;
+    lastDecade = 6;
     break;
   case E24:
     series = e24Series;
     size = sizeof(e24Series) / sizeof(e24Series[0]);
+    firstDecade = -1;
+    lastDecade = 6;
     break;
   case E48:
     series = e48Series;
     size = sizeof(e48Series) / sizeof(e48Series[0]);
+    firstDecade = -2;
+    lastDecade = 5;
     break;
   case E96:
     series = e96Series;
     size = sizeof(e96Series) / sizeof(e96Series[0]);
+    firstDecade = -2;
+    lastDecade = 5;
     break;
   case E192:
     series = e192Series;
     size = sizeof(e192Series) / sizeof(e192Series[0]);
+    firstDecade = -2;
+    lastDecade = 5;
     break;
   }
 
   // qDebug() << "Desired value is" << desiredValue << "Ohms.";
 
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   // Calculate by brute force.
+  // TODO: Optimize by continuing if any single resistor or first resistor of decade is greater than the desired value
   for (int decade1 = firstDecade; decade1 <= lastDecade; decade1++) {
     for (int i1 = 0; i1 < size; i1++) {
       for (int decade2 = firstDecade; decade2 <= lastDecade; decade2++) {
         for (int i2 = 0; i2 < size; i2++) {
-          double r1 = series[i1] * exp10(decade1);
-          double r2 = series[i2] * exp10(decade2);
-          double value = r1 + r2;
-          double diff = fabs(desiredValue - value);
-          if (diff < bestDiff) {
-            bestR1 = r1;
-            bestR2 = r2;
-            bestDiff = diff;
-            // qDebug() << "Best so far is" << r1 << "+" << r2;
+          for (int decade3 = firstDecade; decade3 <= lastDecade; decade3++) {
+            for (int i3 = 0; i3 < size; i3++) {
+              double r1 = series[i1] * exp10(decade1);
+              double r2 = series[i2] * exp10(decade2);
+              double r3 = series[i3] * exp10(decade3);
+              double value = r1 + r2 + r3;
+              double diff = fabs(desiredValue - value);
+              if (diff < bestDiff) {
+                bestR1 = r1;
+                bestR2 = r2;
+                bestR3 = r3;
+                bestDiff = diff;
+                qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
+                // Optimization:stop if exact solution found.
+                if (qFuzzyCompare(bestDiff, 0)) {
+                    qDebug() << "Exact solution found!";
+                    goto done;
+                }
+              }
+            }
           }
         }
       }
     }
   }
 
-  // qDebug() << "Best R1 =" << bestR1;
-  // qDebug() << "Best R2 =" << bestR2;
+  done:
+
+  QApplication::restoreOverrideCursor();
+
+  qDebug() << "Best R1 =" << bestR1;
+  qDebug() << "Best R2 =" << bestR2;
+  qDebug() << "Best R3 =" << bestR3;
 
   if (bestR1 > 1e6) {
     ui->r1ResistanceComboBox->setCurrentIndex(MEGOHMS);
@@ -234,7 +264,18 @@ void MainWindow::calculate() {
     ui->r2SpinBox->setValue(bestR2);
   }
 
-  double value = bestR1 + bestR2;
+  if (bestR3 > 1e6) {
+    ui->r3ResistanceComboBox->setCurrentIndex(MEGOHMS);
+    ui->r3SpinBox->setValue(bestR3 / 1e6);
+  } else if (bestR3 > 1e3) {
+    ui->r3ResistanceComboBox->setCurrentIndex(KILOHMS);
+    ui->r3SpinBox->setValue(bestR3 / 1e3);
+  } else {
+    ui->r3ResistanceComboBox->setCurrentIndex(OHMS);
+    ui->r3SpinBox->setValue(bestR3);
+  }
+
+  double value = bestR1 + bestR2 + bestR3;
   double error = (value - desiredValue) / desiredValue;
   QString s;
   if (value > 1e6) {
@@ -307,10 +348,13 @@ void MainWindow::about() {
          "you may not use this file except in compliance with the License.<br>"
          "You may obtain a copy of the License at<br><br>"
          "  http://www.apache.org/licenses/LICENSE-2.0<br><br>"
-         "Unless required by applicable law or agreed to in writing, software<br>"
-         "distributed under the License is distributed on an \"AS IS\" BASIS,<br>"
+         "Unless required by applicable law or agreed to in writing, "
+         "software<br>"
+         "distributed under the License is distributed on an \"AS IS\" "
+         "BASIS,<br>"
          "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or "
          "implied.<br>"
-         "See the License for the specific language governing permissions and<br>"
+         "See the License for the specific language governing permissions "
+         "and<br>"
          "limitations under the License.<br>"));
 }
