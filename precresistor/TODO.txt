@@ -1,10 +1,8 @@
-Busy indicator during calculation.
 Support user entering values (potentially all).
 Implement all circuit options.
 Optimize algorithm for finding solution.
 
 Future:
-Add application icon.
 Show multiple solutions.
 Option to optimize for power dissipation?
 Localization.
