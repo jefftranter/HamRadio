@@ -6,8 +6,6 @@
 #include <math.h>
 
 // List of standard resistor values.
-// See
-// https://eepower.com/resistor-guide/resistor-standards-and-codes/resistor-values/
 const int e6Series[] = {0, 10, 15, 22, 33, 47, 68};
 
 const int e12Series[] = {0, 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82};
@@ -64,6 +62,8 @@ const int P3 = 3;
 const int SP3A = 4;
 const int SP3B = 5;
 
+
+// Constructor
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
@@ -87,8 +87,10 @@ MainWindow::MainWindow(QWidget *parent)
   calculate();
 }
 
+// Destructor
 MainWindow::~MainWindow() { delete ui; }
 
+// Set controls based on operating mode.
 void MainWindow::setMode(int mode) {
   switch (mode) {
   case S2:
@@ -156,6 +158,7 @@ int MainWindow::multiplier(int units) {
   }
 }
 
+// Calculate result based on input values.
 void MainWindow::calculate() {
   double desiredValue =
       ui->desiredValueSpinBox->value() *
@@ -239,7 +242,7 @@ void MainWindow::calculate() {
                 bestR3 = r3;
                 bestDiff = diff;
                 qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
-                // Optimization:stop if exact solution found.
+                // Optimization: stop if exact solution found.
                 if (qFuzzyCompare(bestDiff, 0)) {
                     qDebug() << "Exact solution found!";
                     goto done;
@@ -307,6 +310,7 @@ void MainWindow::calculate() {
   ui->actualValueLabel->setText(s);
 }
 
+// Show resistor values.
 void MainWindow::info() {
   QString text;
   const int *series = nullptr;
@@ -357,6 +361,7 @@ void MainWindow::info() {
   QMessageBox::information(this, tr("Info"), text);
 }
 
+// About dialog.
 void MainWindow::about() {
   QMessageBox::about(
       this, tr("About Precresistor"),
