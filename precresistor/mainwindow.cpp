@@ -116,7 +116,6 @@ void MainWindow::setMode() {
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-s2.png")));
     ui->r3SpinBox->setEnabled(false);
-    ui->r3CheckBox->setEnabled(false);
     ui->r3ResistanceComboBox->setEnabled(false);
     ui->r3Label->setEnabled(false);
     break;
@@ -124,7 +123,6 @@ void MainWindow::setMode() {
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-s3.png")));
     ui->r3SpinBox->setEnabled(true);
-    ui->r3CheckBox->setEnabled(true);
     ui->r3ResistanceComboBox->setEnabled(true);
     ui->r3Label->setEnabled(true);
     break;
@@ -132,7 +130,6 @@ void MainWindow::setMode() {
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-p2.png")));
     ui->r3SpinBox->setEnabled(false);
-    ui->r3CheckBox->setEnabled(false);
     ui->r3ResistanceComboBox->setEnabled(false);
     ui->r3Label->setEnabled(false);
     break;
@@ -140,7 +137,6 @@ void MainWindow::setMode() {
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-p3.png")));
     ui->r3SpinBox->setEnabled(true);
-    ui->r3CheckBox->setEnabled(true);
     ui->r3ResistanceComboBox->setEnabled(true);
     ui->r3Label->setEnabled(true);
     break;
@@ -148,7 +144,6 @@ void MainWindow::setMode() {
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-sp3a.png")));
     ui->r3SpinBox->setEnabled(true);
-    ui->r3CheckBox->setEnabled(true);
     ui->r3ResistanceComboBox->setEnabled(true);
     ui->r3Label->setEnabled(true);
     break;
@@ -156,7 +151,6 @@ void MainWindow::setMode() {
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-sp3b.png")));
     ui->r3SpinBox->setEnabled(true);
-    ui->r3CheckBox->setEnabled(true);
     ui->r3ResistanceComboBox->setEnabled(true);
     ui->r3Label->setEnabled(true);
     break;

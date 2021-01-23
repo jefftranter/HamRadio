@@ -1,5 +1,4 @@
 Optimize algorithm for finding solution.
-Support user entering values (potentially all).
 
 Future:
 Show multiple solutions.
