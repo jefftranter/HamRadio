@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   ui->modeComboBox->setCurrentIndex(0);
   ui->standardValuesComboBox->setCurrentIndex(E12);
+
   setMode();
   setSeries();
   setR1();
@@ -266,7 +267,11 @@ void MainWindow::calculate() {
   } else {
     s = tr("<b>%1 Ohms").arg(QString::number(m_result));
   }
-  s += tr(" (error %1%)</b>").arg(QString::number(100 * error, 'g', 2));
+  if (qFuzzyCompare(error, 0)) {
+    s += " (exact)";
+  } else {
+    s += tr(" (error %1%)</b>").arg(QString::number(100 * error, 'g', 2));
+  }
   ui->actualValueLabel->setText(s);
 }
 
