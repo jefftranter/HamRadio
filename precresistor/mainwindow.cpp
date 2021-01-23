@@ -16,27 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::calculate);
   connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::info);
   connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
-  connect(ui->desiredValueSpinBox,
-          QOverload<double>::of(&QDoubleSpinBox::valueChanged), this,
-          &MainWindow::setDesired);
-  connect(ui->r1SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-          this, &MainWindow::setR1);
-  connect(ui->r2SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-          this, &MainWindow::setR2);
-  connect(ui->r3SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-          this, &MainWindow::setR3);
-  connect(ui->desiredResistanceComboBox,
-          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-          &MainWindow::setDesired);
-  connect(ui->r1ResistanceComboBox,
-          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-          &MainWindow::setR1);
-  connect(ui->r2ResistanceComboBox,
-          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-          &MainWindow::setR2);
-  connect(ui->r3ResistanceComboBox,
-          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-          &MainWindow::setR3);
   connect(ui->calculateButton, &QPushButton::clicked, this,
           &MainWindow::calculate);
   connect(ui->infoButton, &QPushButton::clicked, this, &MainWindow::info);
@@ -65,34 +44,28 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::setR1() {
   m_r1 = ui->r1SpinBox->value() *
          multiplier(ui->r1ResistanceComboBox->currentIndex());
-  // qDebug() << "_R1 =" << m_r1;
 }
 
 void MainWindow::setR2() {
   m_r2 = ui->r2SpinBox->value() *
          multiplier(ui->r2ResistanceComboBox->currentIndex());
-  // qDebug() << "_R2 =" << m_r2;
 }
 
 void MainWindow::setR3() {
   m_r3 = ui->r3SpinBox->value() *
          multiplier(ui->r3ResistanceComboBox->currentIndex());
-  // qDebug() << "_R3 =" << m_r3;
 }
 
 void MainWindow::setDesired() {
   m_desired = ui->desiredValueSpinBox->value() *
               multiplier(ui->desiredResistanceComboBox->currentIndex());
-  // qDebug() << "Desired =" << m_desired;
 }
 
 void MainWindow::setResult(double newResult) {
   m_result = newResult;
-  // qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::setSeries() {
-  // qDebug() << "Series =" << ui->standardValuesComboBox->currentIndex();
 
   switch (ui->standardValuesComboBox->currentIndex()) {
   case E6:
@@ -137,7 +110,6 @@ void MainWindow::setSeries() {
 // Set controls based on operating mode.
 void MainWindow::setMode() {
   m_mode = ui->modeComboBox->currentIndex();
-  // qDebug() << "Mode =" << m_mode;
 
   switch (m_mode) {
   case S2:
@@ -233,6 +205,11 @@ int MainWindow::optimalUnits(double val)
 // Calculate result based on input values.
 void MainWindow::calculate() {
 
+  setR1();
+  setR2();
+  setR3();
+  setDesired();
+
   if (m_desired > 100e6) {
     QMessageBox::warning(this, tr("Out of Range"),
                          tr("The desired value is too high. Please specify a "
@@ -240,15 +217,9 @@ void MainWindow::calculate() {
     return;
   }
 
-  qDebug() << "Desired value is" << m_desired << "Ohms.";
-
   QApplication::setOverrideCursor(Qt::WaitCursor);
   solve();
   QApplication::restoreOverrideCursor();
-
-  qDebug() << "R1 =" << m_r1;
-  qDebug() << "R2 =" << m_r2;
-  qDebug() << "R3 =" << m_r3;
 
   ui->r1SpinBox->setValue(optimalScale(m_r1));
   ui->r1ResistanceComboBox->setCurrentIndex(optimalUnits(m_r1));
@@ -320,10 +291,8 @@ void MainWindow::solveS2() {
             bestR1 = r1;
             bestR2 = r2;
             bestDiff = diff;
-            //qDebug() << "Best so far is" << r1 << "+" << r2;
             // Optimization: stop if exact solution found.
             if (qFuzzyCompare(bestDiff, 0)) {
-              qDebug() << "Exact solution found!";
               goto done;
             }
           }
@@ -336,9 +305,6 @@ done:
   m_r1 = bestR1;
   m_r2 = bestR2;
   m_result = bestR1 + bestR2;
-  qDebug() << "R1 =" << m_r1;
-  qDebug() << "R2 =" << m_r2;
-  qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::solveS3() {
@@ -368,10 +334,8 @@ void MainWindow::solveS3() {
                 bestR2 = r2;
                 bestR3 = r3;
                 bestDiff = diff;
-                //qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
                 // Optimization: stop if exact solution found.
                 if (qFuzzyCompare(bestDiff, 0)) {
-                  qDebug() << "Exact solution found!";
                   goto done;
                 }
               }
@@ -386,10 +350,6 @@ done:
   m_r2 = bestR2;
   m_r3 = bestR3;
   m_result = bestR1 + bestR2 + bestR3;
-  qDebug() << "R1 =" << m_r1;
-  qDebug() << "R2 =" << m_r2;
-  qDebug() << "R3 =" << m_r3;
-  qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::solveP2()
@@ -418,10 +378,8 @@ void MainWindow::solveP2()
             bestR1 = r1;
             bestR2 = r2;
             bestDiff = diff;
-            //qDebug() << "Best so far is" << r1 << "+" << r2;
             // Optimization: stop if exact solution found.
             if (qFuzzyCompare(bestDiff, 0)) {
-              qDebug() << "Exact solution found!";
               goto done;
             }
           }
@@ -434,9 +392,6 @@ void MainWindow::solveP2()
   m_r1 = bestR1;
   m_r2 = bestR2;
   m_result = (bestR1 * bestR2) / (bestR1 + bestR2);
-  qDebug() << "R1 =" << m_r1;
-  qDebug() << "R2 =" << m_r2;
-  qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::solveP3()
@@ -471,10 +426,8 @@ void MainWindow::solveP3()
                 bestR2 = r2;
                 bestR3 = r3;
                 bestDiff = diff;
-                //qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
                 // Optimization: stop if exact solution found.
                 if (qFuzzyCompare(bestDiff, 0)) {
-                  qDebug() << "Exact solution found!";
                   goto done;
                 }
               }
@@ -489,10 +442,6 @@ done:
   m_r2 = bestR2;
   m_r3 = bestR3;
   m_result = 1 / (1 / bestR1 + 1 / bestR2 + 1 / bestR3);
-  qDebug() << "R1 =" << m_r1;
-  qDebug() << "R2 =" << m_r2;
-  qDebug() << "R3 =" << m_r3;
-  qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::solveSP3A()
@@ -527,10 +476,8 @@ void MainWindow::solveSP3A()
                 bestR2 = r2;
                 bestR3 = r3;
                 bestDiff = diff;
-                //qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
                 // Optimization: stop if exact solution found.
                 if (qFuzzyCompare(bestDiff, 0)) {
-                  qDebug() << "Exact solution found!";
                   goto done;
                 }
               }
@@ -545,11 +492,6 @@ done:
   m_r2 = bestR2;
   m_r3 = bestR3;
   m_result = ((bestR1 + bestR2) * bestR3) / (bestR1 + bestR2 + bestR3);
-
-  qDebug() << "R1 =" << m_r1;
-  qDebug() << "R2 =" << m_r2;
-  qDebug() << "R3 =" << m_r3;
-  qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::solveSP3B()
@@ -584,10 +526,8 @@ void MainWindow::solveSP3B()
                 bestR2 = r2;
                 bestR3 = r3;
                 bestDiff = diff;
-                //qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
                 // Optimization: stop if exact solution found.
                 if (qFuzzyCompare(bestDiff, 0)) {
-                  qDebug() << "Exact solution found!";
                   goto done;
                 }
               }
@@ -602,11 +542,6 @@ done:
   m_r2 = bestR2;
   m_r3 = bestR3;
   m_result = value = bestR1 + (bestR2 * bestR3) / (bestR2 + bestR3);
-
-  qDebug() << "R1 =" << m_r1;
-  qDebug() << "R2 =" << m_r2;
-  qDebug() << "R3 =" << m_r3;
-  qDebug() << "Result =" << m_result;
 }
 
 // Show resistor values.
