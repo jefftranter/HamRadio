@@ -81,6 +81,8 @@ public:
   void setSeries();
   void calculate();
   int multiplier(int units);
+  double optimalScale(double val);
+  int optimalUnits(double val);
   void info();
   void about();
   void solve();

@@ -205,12 +205,37 @@ int MainWindow::multiplier(int units) {
   }
 }
 
+// Return optimal scaled value based on value.
+double MainWindow::optimalScale(double val)
+{
+  if (val >= 1e6) {
+    return val / 1e6;
+  } else if (val >= 1e3) {
+    return val / 1e3;
+  } else {
+    return val;
+  }
+}
+
+
+// Return optimal units for value
+int MainWindow::optimalUnits(double val)
+{
+  if (val >= 1e6) {
+    return MEGOHMS;
+  } else if (val >= 1e3) {
+    return KILOHMS;
+  } else {
+    return OHMS;
+  }
+}
+
 // Calculate result based on input values.
 void MainWindow::calculate() {
 
   if (m_desired > 100e6) {
     QMessageBox::warning(this, tr("Out of Range"),
-                         tr("The desired value is too high, please specify a "
+                         tr("The desired value is too high. Please specify a "
                             "value of no more than 100 Megohms."));
     return;
   }
@@ -225,44 +250,20 @@ void MainWindow::calculate() {
   qDebug() << "R2 =" << m_r2;
   qDebug() << "R3 =" << m_r3;
 
-  if (m_r1 > 1e6) {
-    ui->r1SpinBox->setValue(m_r1 / 1e6);
-    ui->r1ResistanceComboBox->setCurrentIndex(MEGOHMS);
-  } else if (m_r1 > 1e3) {
-    ui->r1SpinBox->setValue(m_r1 / 1e3);
-    ui->r1ResistanceComboBox->setCurrentIndex(KILOHMS);
-  } else {
-    ui->r1SpinBox->setValue(m_r1);
-    ui->r1ResistanceComboBox->setCurrentIndex(OHMS);
-  }
+  ui->r1SpinBox->setValue(optimalScale(m_r1));
+  ui->r1ResistanceComboBox->setCurrentIndex(optimalUnits(m_r1));
 
-  if (m_r2 > 1e6) {
-    ui->r2SpinBox->setValue(m_r2 / 1e6);
-    ui->r2ResistanceComboBox->setCurrentIndex(MEGOHMS);
-  } else if (m_r2 > 1e3) {
-    ui->r2SpinBox->setValue(m_r2 / 1e3);
-    ui->r2ResistanceComboBox->setCurrentIndex(KILOHMS);
-  } else {
-    ui->r2SpinBox->setValue(m_r2);
-    ui->r2ResistanceComboBox->setCurrentIndex(OHMS);
-  }
+  ui->r2SpinBox->setValue(optimalScale(m_r2));
+  ui->r2ResistanceComboBox->setCurrentIndex(optimalUnits(m_r2));
 
-  if (m_r3 > 1e6) {
-    ui->r3SpinBox->setValue(m_r3 / 1e6);
-    ui->r3ResistanceComboBox->setCurrentIndex(MEGOHMS);
-  } else if (m_r3 > 1e3) {
-    ui->r3SpinBox->setValue(m_r3 / 1e3);
-    ui->r3ResistanceComboBox->setCurrentIndex(KILOHMS);
-  } else {
-    ui->r3SpinBox->setValue(m_r3);
-    ui->r3ResistanceComboBox->setCurrentIndex(OHMS);
-  }
+  ui->r3SpinBox->setValue(optimalScale(m_r3));
+  ui->r3ResistanceComboBox->setCurrentIndex(optimalUnits(m_r3));
 
   double error = (m_result - m_desired) / m_desired;
   QString s;
-  if (m_result > 1e6) {
+  if (m_result >= 1e6) {
     s = tr("<b>%1 Megohms").arg(QString::number(m_result / 1e6));
-  } else if (m_result > 1e3) {
+  } else if (m_result >= 1e3) {
     s = tr("<b>%1 Kilohms").arg(QString::number(m_result / 1e3));
   } else {
     s = tr("<b>%1 Ohms").arg(QString::number(m_result));
