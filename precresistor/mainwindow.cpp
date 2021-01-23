@@ -305,7 +305,7 @@ void MainWindow::solveS2() {
   double value = -1;
 
   // Calculate by brute force.
-  // TODO: Optimize by continuing if any single resistor or first resistor of
+  // TODO: Optimize by breaking if any single resistor or first resistor of
   // decade is greater than the desired value
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
@@ -348,7 +348,7 @@ void MainWindow::solveS3() {
   double value = -1;
 
   // Calculate by brute force.
-  // TODO: Optimize by continuing if any single resistor or first resistor of
+  // TODO: Optimize by breaking if any single resistor or first resistor of
   // decade is greater than the desired value
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
@@ -401,28 +401,30 @@ void MainWindow::solveSP3B() {}
 
 // Show resistor values.
 void MainWindow::info() {
-  QString text;
+  QString text = tr("Standard resistor values in ");
 
   switch (ui->standardValuesComboBox->currentIndex()) {
   case E6:
-    text = tr("Standard resistor values in E6 (20%) series:\n\n");
+    text += tr("E6 (20%)");
     break;
   case E12:
-    text = tr("Standard resistor values in E12 (10%) series:\n\n");
+    text += tr("E12 (10%)");
     break;
   case E24:
-    text = tr("Standard resistor values in E24 (5%) series:\n\n");
+    text += tr("E24 (5%)");
     break;
   case E48:
-    text = tr("Standard resistor values in E48 (2%) series:\n\n");
+    text += tr("E48 (2%)");
     break;
   case E96:
-    text = tr("Standard resistor values in E96 (1%) series:\n\n");
+    text += tr("E96 (1%)");
     break;
   case E192:
-    text = tr("Standard resistor values in E192 (0.5%) series:\n\n");
+    text += tr("E192 (0.5%)");
     break;
   }
+
+  text += tr(" series:\n\n");
 
   for (int i = 1; i < m_seriesSize; i++) {
     text += QString::number(m_series[i]);
