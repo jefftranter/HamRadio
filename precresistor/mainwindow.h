@@ -9,8 +9,26 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-// List of standard resistor values.
+// Constants for combobox values
+const int OHMS = 0;
+const int KILOHMS = 1;
+const int MEGOHMS = 2;
 
+const int E6 = 0;
+const int E12 = 1;
+const int E24 = 2;
+const int E48 = 3;
+const int E96 = 4;
+const int E192 = 5;
+
+const int S2 = 0;
+const int S3 = 1;
+const int P2 = 2;
+const int P3 = 3;
+const int SP3A = 4;
+const int SP3B = 5;
+
+// List of standard resistor values.
 const int e6Series[] = {0, 10, 15, 22, 33, 47, 68};
 
 const int e12Series[] = {0, 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82};
@@ -65,25 +83,25 @@ public:
   int multiplier(int units);
   void info();
   void about();
-  bool solve();
-  bool solveS2();
-  bool solveS3();
+  void solve();
+  void solveS2();
+  void solveS3();
   void solveP2();
   void solveP3();
   void solveSP3A();
   void solveSP3B();
 
 private:
-  Ui::MainWindow *ui;
-  int m_mode ;       // Circuit mode
-  double m_r1;       // Value of R1
-  double m_r2;       // Value of R2
-  double m_r3;       // Value of R3
-  double m_desired;  // Desired total resistance value
-  double m_result;   // Actual resistance value
-  const int *m_series;     // Resistor series
-  int m_seriesSize;  // Size of resistor series
-  int m_firstDecade; // First decade of series
-  int m_lastDecade;  // Last decade of series
+  Ui::MainWindow *ui;  // UI form
+  int m_mode;          // Circuit mode
+  double m_r1;         // Value of R1
+  double m_r2;         // Value of R2
+  double m_r3;         // Value of R3
+  double m_desired;    // Desired total resistance value
+  double m_result;     // Actual resistance value
+  const int *m_series; // Resistor series
+  int m_seriesSize;    // Size of resistor series
+  int m_firstDecade;   // First decade of series
+  int m_lastDecade;    // Last decade of series
 };
 #endif // MAINWINDOW_H

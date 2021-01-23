@@ -5,25 +5,6 @@
 #include <QString>
 #include <math.h>
 
-// Constants for combobox values
-const int OHMS = 0;
-const int KILOHMS = 1;
-const int MEGOHMS = 2;
-
-const int E6 = 0;
-const int E12 = 1;
-const int E24 = 2;
-const int E48 = 3;
-const int E96 = 4;
-const int E192 = 5;
-
-const int S2 = 0;
-const int S3 = 1;
-const int P2 = 2;
-const int P3 = 3;
-const int SP3A = 4;
-const int SP3B = 5;
-
 // Constructor
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -66,8 +47,14 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::setSeries);
 
   ui->modeComboBox->setCurrentIndex(0);
-  setMode();
   ui->standardValuesComboBox->setCurrentIndex(E12);
+  setMode();
+  setSeries();
+  setR1();
+  setR2();
+  setR3();
+  setDesired();
+  setResult(0);
   calculate();
 }
 
@@ -77,19 +64,19 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::setR1() {
   m_r1 = ui->r1SpinBox->value() *
          multiplier(ui->r1ResistanceComboBox->currentIndex());
-  qDebug() << "R1 =" << m_r1;
+  qDebug() << "_R1 =" << m_r1;
 }
 
 void MainWindow::setR2() {
   m_r2 = ui->r2SpinBox->value() *
          multiplier(ui->r2ResistanceComboBox->currentIndex());
-  qDebug() << "R2 =" << m_r2;
+  qDebug() << "_R2 =" << m_r2;
 }
 
 void MainWindow::setR3() {
   m_r3 = ui->r3SpinBox->value() *
          multiplier(ui->r3ResistanceComboBox->currentIndex());
-  qDebug() << "R3 =" << m_r3;
+  qDebug() << "_R3 =" << m_r3;
 }
 
 void MainWindow::setDesired() {
@@ -110,26 +97,38 @@ void MainWindow::setSeries() {
   case E6:
     m_series = e6Series;
     m_seriesSize = sizeof(e6Series) / sizeof(e6Series[0]);
+    m_firstDecade = -1;
+    m_lastDecade = 6;
     break;
   case E12:
     m_series = e12Series;
     m_seriesSize = sizeof(e12Series) / sizeof(e12Series[0]);
+    m_firstDecade = -1;
+    m_lastDecade = 6;
     break;
   case E24:
     m_series = e24Series;
     m_seriesSize = sizeof(e24Series) / sizeof(e24Series[0]);
+    m_firstDecade = -1;
+    m_lastDecade = 6;
     break;
   case E48:
     m_series = e48Series;
     m_seriesSize = sizeof(e48Series) / sizeof(e48Series[0]);
+    m_firstDecade = -2;
+    m_lastDecade = 5;
     break;
   case E96:
     m_series = e96Series;
     m_seriesSize = sizeof(e96Series) / sizeof(e96Series[0]);
+    m_firstDecade = -2;
+    m_lastDecade = 5;
     break;
   case E192:
     m_series = e192Series;
     m_seriesSize = sizeof(e192Series) / sizeof(e192Series[0]);
+    m_firstDecade = -2;
+    m_lastDecade = 5;
     break;
   }
 }
@@ -207,133 +206,96 @@ int MainWindow::multiplier(int units) {
 
 // Calculate result based on input values.
 void MainWindow::calculate() {
-  double desiredValue =
-      ui->desiredValueSpinBox->value() *
-      multiplier(ui->desiredResistanceComboBox->currentIndex());
-  double bestR1 = -1;
-  double bestR2 = -1;
-  double bestR3 = -1;
-  // double bestDiff = 100e6;
-  const int *series = nullptr;
-  int size = 0;
-  int firstDecade = 0;
-  int lastDecade = 0;
-  double value = 0;
 
-  if (desiredValue > 100e6) {
+  if (m_desired > 100e6) {
     QMessageBox::warning(this, tr("Out of Range"),
                          tr("The desired value is too high, please specify a "
                             "value of no more than 100 Megohms."));
     return;
   }
 
-  // TODO: Below code is common with Info, refactor.
-  switch (ui->standardValuesComboBox->currentIndex()) {
-  case E6:
-    series = e6Series;
-    size = sizeof(e6Series) / sizeof(e6Series[0]);
-    firstDecade = -1;
-    lastDecade = 6;
-    break;
-  case E12:
-    series = e12Series;
-    size = sizeof(e12Series) / sizeof(e12Series[0]);
-    firstDecade = -1;
-    lastDecade = 6;
-    break;
-  case E24:
-    series = e24Series;
-    size = sizeof(e24Series) / sizeof(e24Series[0]);
-    firstDecade = -1;
-    lastDecade = 6;
-    break;
-  case E48:
-    series = e48Series;
-    size = sizeof(e48Series) / sizeof(e48Series[0]);
-    firstDecade = -2;
-    lastDecade = 5;
-    break;
-  case E96:
-    series = e96Series;
-    size = sizeof(e96Series) / sizeof(e96Series[0]);
-    firstDecade = -2;
-    lastDecade = 5;
-    break;
-  case E192:
-    series = e192Series;
-    size = sizeof(e192Series) / sizeof(e192Series[0]);
-    firstDecade = -2;
-    lastDecade = 5;
-    break;
-  }
-
-  // qDebug() << "Desired value is" << desiredValue << "Ohms.";
+  qDebug() << "Desired value is" << m_desired << "Ohms.";
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
-
-  // solve();
-
-  // solveS2(firstDecade, lastDecade, series, size, desiredValue, value, bestR1,
-  // bestR2);
-
+  solve();
   QApplication::restoreOverrideCursor();
 
-  qDebug() << "Best R1 =" << bestR1;
-  qDebug() << "Best R2 =" << bestR2;
-  qDebug() << "Best R3 =" << bestR3;
+  qDebug() << ".R1 =" << m_r1;
+  qDebug() << ".R2 =" << m_r2;
+  qDebug() << ".R3 =" << m_r3;
 
-  if (bestR1 > 1e6) {
+  if (m_r1 > 1e6) {
+    ui->r1SpinBox->setValue(m_r1 / 1e6);
     ui->r1ResistanceComboBox->setCurrentIndex(MEGOHMS);
-    ui->r1SpinBox->setValue(bestR1 / 1e6);
-  } else if (bestR1 > 1e3) {
+  } else if (m_r1 > 1e3) {
+    ui->r1SpinBox->setValue(m_r1 / 1e3);
     ui->r1ResistanceComboBox->setCurrentIndex(KILOHMS);
-    ui->r1SpinBox->setValue(bestR1 / 1e3);
   } else {
+    ui->r1SpinBox->setValue(m_r1);
     ui->r1ResistanceComboBox->setCurrentIndex(OHMS);
-    ui->r1SpinBox->setValue(bestR1);
   }
 
-  if (bestR2 > 1e6) {
+  if (m_r2 > 1e6) {
+    ui->r2SpinBox->setValue(m_r2 / 1e6);
     ui->r2ResistanceComboBox->setCurrentIndex(MEGOHMS);
-    ui->r2SpinBox->setValue(bestR2 / 1e6);
-  } else if (bestR2 > 1e3) {
+  } else if (m_r2 > 1e3) {
+    ui->r2SpinBox->setValue(m_r2 / 1e3);
     ui->r2ResistanceComboBox->setCurrentIndex(KILOHMS);
-    ui->r2SpinBox->setValue(bestR2 / 1e3);
   } else {
+    ui->r2SpinBox->setValue(m_r2);
     ui->r2ResistanceComboBox->setCurrentIndex(OHMS);
-    ui->r2SpinBox->setValue(bestR2);
   }
 
-  if (bestR3 > 1e6) {
+  if (m_r3 > 1e6) {
+    ui->r3SpinBox->setValue(m_r3 / 1e6);
     ui->r3ResistanceComboBox->setCurrentIndex(MEGOHMS);
-    ui->r3SpinBox->setValue(bestR3 / 1e6);
-  } else if (bestR3 > 1e3) {
+  } else if (m_r3 > 1e3) {
+    ui->r3SpinBox->setValue(m_r3 / 1e3);
     ui->r3ResistanceComboBox->setCurrentIndex(KILOHMS);
-    ui->r3SpinBox->setValue(bestR3 / 1e3);
   } else {
+    ui->r3SpinBox->setValue(m_r3);
     ui->r3ResistanceComboBox->setCurrentIndex(OHMS);
-    ui->r3SpinBox->setValue(bestR3);
   }
 
-  double error = (value - desiredValue) / desiredValue;
+  double error = (m_result - m_desired) / m_desired;
   QString s;
-  if (value > 1e6) {
-    s = tr("<b>%1 Megohms").arg(QString::number(value / 1e6));
-  } else if (value > 1e3) {
-    s = tr("<b>%1 Kilohms").arg(QString::number(value / 1e3));
+  if (m_result > 1e6) {
+    s = tr("<b>%1 Megohms").arg(QString::number(m_result / 1e6));
+  } else if (m_result > 1e3) {
+    s = tr("<b>%1 Kilohms").arg(QString::number(m_result / 1e3));
   } else {
-    s = tr("<b>%1 Ohms").arg(QString::number(value));
+    s = tr("<b>%1 Ohms").arg(QString::number(m_result));
   }
   s += tr(" (error %1%)</b>").arg(QString::number(100 * error, 'g', 2));
   ui->actualValueLabel->setText(s);
 }
 
-bool MainWindow::solve() { return true; }
+void MainWindow::solve() {
+  switch (m_mode) {
+  case S2:
+    solveS2();
+    break;
+  case S3:
+    solveS3();
+    break;
+  case P2:
+    solveP2();
+    break;
+  case P3:
+    solveP3();
+    break;
+  case SP3A:
+    solveSP3A();
+    break;
+  case SP3B:
+    solveSP3B();
+    break;
+  }
+}
 
-bool MainWindow::solveS2() {
+void MainWindow::solveS2() {
   double bestR1 = -1;
   double bestR2 = -1;
-  // double bestR3 = -1;
   double bestDiff = 100e6;
   double value = -1;
 
@@ -365,13 +327,15 @@ bool MainWindow::solveS2() {
   }
 
 done:
-  // pr1 = bestR1;
-  // pr2 = bestR2;
-  // presult = value;
-  return true;
+  m_r1 = bestR1;
+  m_r2 = bestR2;
+  m_result = bestR1 + bestR2;
+  qDebug() << "=R1 =" << m_r1;
+  qDebug() << "=R2 =" << m_r2;
+  qDebug() << "Result =" << m_result;
 }
 
-bool MainWindow::solveS3() {
+void MainWindow::solveS3() {
   /*
     // Calculate by brute force.
     // TODO: Optimize by continuing if any single resistor or first resistor of
@@ -401,7 +365,6 @@ bool MainWindow::solveS3() {
 
     done:
   */
-  return true;
 }
 
 void MainWindow::solveP2() {}
