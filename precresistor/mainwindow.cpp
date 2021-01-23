@@ -5,44 +5,6 @@
 #include <QString>
 #include <math.h>
 
-// List of standard resistor values.
-const int e6Series[] = {0, 10, 15, 22, 33, 47, 68};
-
-const int e12Series[] = {0, 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82};
-
-const int e24Series[] = {0,  10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30,
-                         33, 36, 39, 43, 47, 51, 56, 62, 68, 75, 82, 91};
-
-const int e48Series[] = {0,   100, 105, 110, 115, 121, 127, 133, 140, 147,
-                         154, 162, 169, 178, 187, 196, 205, 215, 226, 237,
-                         249, 261, 274, 287, 301, 316, 332, 348, 365, 383,
-                         402, 422, 442, 464, 487, 511, 536, 562, 590, 619,
-                         649, 681, 715, 750, 787, 825, 866, 909, 953};
-
-const int e96Series[] = {
-    0,   100, 102, 105, 107, 110, 113, 115, 118, 121, 124, 127, 130, 133,
-    137, 140, 143, 147, 150, 154, 158, 162, 165, 169, 174, 178, 182, 187,
-    191, 196, 200, 205, 210, 215, 221, 226, 232, 237, 243, 249, 255, 261,
-    267, 274, 280, 287, 294, 301, 309, 316, 324, 332, 340, 348, 357, 365,
-    374, 383, 392, 402, 412, 422, 432, 442, 453, 464, 475, 487, 499, 511,
-    523, 536, 549, 562, 576, 590, 604, 619, 634, 649, 665, 681, 698, 715,
-    732, 750, 768, 787, 806, 825, 845, 866, 887, 909, 931, 953, 976};
-
-const int e192Series[] = {
-    0,   100, 101, 102, 104, 105, 106, 107, 109, 110, 111, 113, 114, 115, 117,
-    118, 120, 121, 123, 124, 126, 127, 129, 130, 132, 133, 135, 137, 138, 140,
-    142, 143, 145, 147, 149, 150, 152, 154, 156, 158, 160, 162, 164, 165, 167,
-    169, 172, 174, 176, 178, 180, 182, 184, 187, 189, 191, 193, 196, 198, 200,
-    203, 205, 208, 210, 213, 215, 218, 221, 223, 226, 229, 232, 234, 237, 240,
-    243, 246, 249, 252, 255, 258, 261, 264, 267, 271, 274, 277, 280, 284, 287,
-    291, 294, 298, 301, 305, 309, 312, 316, 320, 324, 328, 332, 336, 340, 344,
-    348, 352, 357, 361, 365, 370, 374, 379, 383, 388, 392, 397, 402, 407, 412,
-    417, 422, 427, 432, 437, 442, 448, 453, 459, 464, 470, 475, 481, 487, 493,
-    499, 505, 511, 517, 523, 530, 536, 542, 549, 556, 562, 569, 576, 583, 590,
-    597, 604, 612, 619, 626, 634, 642, 649, 657, 665, 673, 681, 690, 698, 706,
-    715, 723, 732, 741, 750, 759, 768, 777, 787, 796, 806, 816, 825, 835, 845,
-    856, 866, 876, 887, 898, 909, 920, 931, 942, 953, 965, 976, 988};
-
 // Constants for combobox values
 const int OHMS = 0;
 const int KILOHMS = 1;
@@ -62,7 +24,6 @@ const int P3 = 3;
 const int SP3A = 4;
 const int SP3B = 5;
 
-
 // Constructor
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -74,15 +35,38 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::calculate);
   connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::info);
   connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
-
+  connect(ui->desiredValueSpinBox,
+          QOverload<double>::of(&QDoubleSpinBox::valueChanged), this,
+          &MainWindow::setDesired);
+  connect(ui->r1SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+          this, &MainWindow::setR1);
+  connect(ui->r2SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+          this, &MainWindow::setR2);
+  connect(ui->r3SpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+          this, &MainWindow::setR3);
+  connect(ui->desiredResistanceComboBox,
+          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+          &MainWindow::setDesired);
+  connect(ui->r1ResistanceComboBox,
+          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+          &MainWindow::setR1);
+  connect(ui->r2ResistanceComboBox,
+          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+          &MainWindow::setR2);
+  connect(ui->r3ResistanceComboBox,
+          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+          &MainWindow::setR3);
   connect(ui->calculateButton, &QPushButton::clicked, this,
           &MainWindow::calculate);
   connect(ui->infoButton, &QPushButton::clicked, this, &MainWindow::info);
   connect(ui->modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &MainWindow::setMode);
+  connect(ui->standardValuesComboBox,
+          QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+          &MainWindow::setSeries);
 
   ui->modeComboBox->setCurrentIndex(0);
-  setMode(0);
+  setMode();
   ui->standardValuesComboBox->setCurrentIndex(E12);
   calculate();
 }
@@ -90,9 +74,72 @@ MainWindow::MainWindow(QWidget *parent)
 // Destructor
 MainWindow::~MainWindow() { delete ui; }
 
+void MainWindow::setR1() {
+  m_r1 = ui->r1SpinBox->value() *
+         multiplier(ui->r1ResistanceComboBox->currentIndex());
+  qDebug() << "R1 =" << m_r1;
+}
+
+void MainWindow::setR2() {
+  m_r2 = ui->r2SpinBox->value() *
+         multiplier(ui->r2ResistanceComboBox->currentIndex());
+  qDebug() << "R2 =" << m_r2;
+}
+
+void MainWindow::setR3() {
+  m_r3 = ui->r3SpinBox->value() *
+         multiplier(ui->r3ResistanceComboBox->currentIndex());
+  qDebug() << "R3 =" << m_r3;
+}
+
+void MainWindow::setDesired() {
+  m_desired = ui->desiredValueSpinBox->value() *
+              multiplier(ui->desiredResistanceComboBox->currentIndex());
+  qDebug() << "Desired =" << m_desired;
+}
+
+void MainWindow::setResult(double newResult) {
+  m_result = newResult;
+  qDebug() << "Result =" << m_result;
+}
+
+void MainWindow::setSeries() {
+  qDebug() << "Series =" << ui->standardValuesComboBox->currentIndex();
+
+  switch (ui->standardValuesComboBox->currentIndex()) {
+  case E6:
+    m_series = e6Series;
+    m_seriesSize = sizeof(e6Series) / sizeof(e6Series[0]);
+    break;
+  case E12:
+    m_series = e12Series;
+    m_seriesSize = sizeof(e12Series) / sizeof(e12Series[0]);
+    break;
+  case E24:
+    m_series = e24Series;
+    m_seriesSize = sizeof(e24Series) / sizeof(e24Series[0]);
+    break;
+  case E48:
+    m_series = e48Series;
+    m_seriesSize = sizeof(e48Series) / sizeof(e48Series[0]);
+    break;
+  case E96:
+    m_series = e96Series;
+    m_seriesSize = sizeof(e96Series) / sizeof(e96Series[0]);
+    break;
+  case E192:
+    m_series = e192Series;
+    m_seriesSize = sizeof(e192Series) / sizeof(e192Series[0]);
+    break;
+  }
+}
+
 // Set controls based on operating mode.
-void MainWindow::setMode(int mode) {
-  switch (mode) {
+void MainWindow::setMode() {
+  m_mode = ui->modeComboBox->currentIndex();
+  qDebug() << "Mode =" << m_mode;
+
+  switch (m_mode) {
   case S2:
     ui->circuitLabel->setPixmap(
         QPixmap(QString::fromUtf8(":/images/circuit-s2.png")));
@@ -166,11 +213,12 @@ void MainWindow::calculate() {
   double bestR1 = -1;
   double bestR2 = -1;
   double bestR3 = -1;
-  double bestDiff = 100e6;
+  // double bestDiff = 100e6;
   const int *series = nullptr;
   int size = 0;
   int firstDecade = 0;
   int lastDecade = 0;
+  double value = 0;
 
   if (desiredValue > 100e6) {
     QMessageBox::warning(this, tr("Out of Range"),
@@ -223,39 +271,10 @@ void MainWindow::calculate() {
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
-  // Calculate by brute force.
-  // TODO: Optimize by continuing if any single resistor or first resistor of decade is greater than the desired value
-  for (int decade1 = firstDecade; decade1 <= lastDecade; decade1++) {
-    for (int i1 = 0; i1 < size; i1++) {
-      for (int decade2 = firstDecade; decade2 <= lastDecade; decade2++) {
-        for (int i2 = 0; i2 < size; i2++) {
-          for (int decade3 = firstDecade; decade3 <= lastDecade; decade3++) {
-            for (int i3 = 0; i3 < size; i3++) {
-              double r1 = series[i1] * exp10(decade1);
-              double r2 = series[i2] * exp10(decade2);
-              double r3 = series[i3] * exp10(decade3);
-              double value = r1 + r2 + r3;
-              double diff = fabs(desiredValue - value);
-              if (diff < bestDiff) {
-                bestR1 = r1;
-                bestR2 = r2;
-                bestR3 = r3;
-                bestDiff = diff;
-                qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
-                // Optimization: stop if exact solution found.
-                if (qFuzzyCompare(bestDiff, 0)) {
-                    qDebug() << "Exact solution found!";
-                    goto done;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  // solve();
 
-  done:
+  // solveS2(firstDecade, lastDecade, series, size, desiredValue, value, bestR1,
+  // bestR2);
 
   QApplication::restoreOverrideCursor();
 
@@ -296,7 +315,6 @@ void MainWindow::calculate() {
     ui->r3SpinBox->setValue(bestR3);
   }
 
-  double value = bestR1 + bestR2 + bestR3;
   double error = (value - desiredValue) / desiredValue;
   QString s;
   if (value > 1e6) {
@@ -310,47 +328,117 @@ void MainWindow::calculate() {
   ui->actualValueLabel->setText(s);
 }
 
+bool MainWindow::solve() { return true; }
+
+bool MainWindow::solveS2() {
+  double bestR1 = -1;
+  double bestR2 = -1;
+  // double bestR3 = -1;
+  double bestDiff = 100e6;
+  double value = -1;
+
+  // Calculate by brute force.
+  // TODO: Optimize by continuing if any single resistor or first resistor of
+  // decade is greater than the desired value
+  for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
+    for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
+        for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          double r1 = m_series[i1] * exp10(decade1);
+          double r2 = m_series[i2] * exp10(decade2);
+          value = r1 + r2;
+          double diff = fabs(m_desired - value);
+          if (diff < bestDiff) {
+            bestR1 = r1;
+            bestR2 = r2;
+            bestDiff = diff;
+            qDebug() << "Best so far is" << r1 << "+" << r2;
+            // Optimization: stop if exact solution found.
+            if (qFuzzyCompare(bestDiff, 0)) {
+              qDebug() << "Exact solution found!";
+              goto done;
+            }
+          }
+        }
+      }
+    }
+  }
+
+done:
+  // pr1 = bestR1;
+  // pr2 = bestR2;
+  // presult = value;
+  return true;
+}
+
+bool MainWindow::solveS3() {
+  /*
+    // Calculate by brute force.
+    // TODO: Optimize by continuing if any single resistor or first resistor of
+    decade is greater than the desired value for (int decade1 = firstDecade;
+    decade1 <= lastDecade; decade1++) { for (int i1 = 0; i1 < size; i1++) { for
+    (int decade2 = firstDecade; decade2 <= lastDecade; decade2++) { for (int i2
+    = 0; i2 < size; i2++) { for (int decade3 = firstDecade; decade3 <=
+    lastDecade; decade3++) { for (int i3 = 0; i3 < size; i3++) { double r1 =
+    series[i1] * exp10(decade1); double r2 = series[i2] * exp10(decade2); double
+    r3 = series[i3] * exp10(decade3); double value = r1 + r2 + r3; double diff =
+    fabs(desiredValue - value); if (diff < bestDiff) { bestR1 = r1; bestR2 = r2;
+                  bestR3 = r3;
+                  bestDiff = diff;
+                  qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
+                  // Optimization: stop if exact solution found.
+                  if (qFuzzyCompare(bestDiff, 0)) {
+                      qDebug() << "Exact solution found!";
+                      goto done;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    done:
+  */
+  return true;
+}
+
+void MainWindow::solveP2() {}
+
+void MainWindow::solveP3() {}
+
+void MainWindow::solveSP3A() {}
+
+void MainWindow::solveSP3B() {}
+
 // Show resistor values.
 void MainWindow::info() {
   QString text;
-  const int *series = nullptr;
-  int size = 0;
 
   switch (ui->standardValuesComboBox->currentIndex()) {
   case E6:
     text = tr("Standard resistor values in E6 (20%) series:\n\n");
-    series = e6Series;
-    size = sizeof(e6Series) / sizeof(e6Series[0]);
     break;
   case E12:
     text = tr("Standard resistor values in E12 (10%) series:\n\n");
-    series = e12Series;
-    size = sizeof(e12Series) / sizeof(e12Series[0]);
     break;
   case E24:
     text = tr("Standard resistor values in E24 (5%) series:\n\n");
-    series = e24Series;
-    size = sizeof(e24Series) / sizeof(e24Series[0]);
     break;
   case E48:
     text = tr("Standard resistor values in E48 (2%) series:\n\n");
-    series = e48Series;
-    size = sizeof(e48Series) / sizeof(e48Series[0]);
     break;
   case E96:
     text = tr("Standard resistor values in E96 (1%) series:\n\n");
-    series = e96Series;
-    size = sizeof(e96Series) / sizeof(e96Series[0]);
     break;
   case E192:
     text = tr("Standard resistor values in E192 (0.5%) series:\n\n");
-    series = e192Series;
-    size = sizeof(e192Series) / sizeof(e192Series[0]);
     break;
   }
 
-  for (int i = 1; i < size; i++) {
-    text += QString::number(series[i]);
+  for (int i = 1; i < m_seriesSize; i++) {
+    text += QString::number(m_series[i]);
     if (i % 12) {
       text += tr(" ");
     } else {
@@ -371,13 +459,10 @@ void MainWindow::about() {
          "you may not use this file except in compliance with the License.<br>"
          "You may obtain a copy of the License at<br><br>"
          "  http://www.apache.org/licenses/LICENSE-2.0<br><br>"
-         "Unless required by applicable law or agreed to in writing, "
-         "software<br>"
-         "distributed under the License is distributed on an \"AS IS\" "
-         "BASIS,<br>"
-         "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or "
-         "implied.<br>"
-         "See the License for the specific language governing permissions "
-         "and<br>"
-         "limitations under the License.<br>"));
+         "Unless required by applicable law or agreed to in writing,<br>"
+         "software distributed under the License is distributed on an<br>"
+         "\"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF<br>"
+         "ANY KIND either express or implied.<br>"
+         "See the License for the specific language governing permissions<br>"
+         "and limitations under the License."));
 }
