@@ -271,7 +271,7 @@ void MainWindow::solveS2() {
   double value = -1;
 
   // Calculate by brute force.
-  // Optimize by breaking out of loop we reach a resistor that is
+  // Optimize by breaking out of loop if we reach a resistor that is
   // greater than the desired value.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
@@ -315,7 +315,7 @@ void MainWindow::solveS3() {
   double value = -1;
 
   // Calculate by brute force.
-  // Optimize by breaking out of loop we reach a resistor that is
+  // Optimize by breaking out of loop if we reach a resistor that is
   // greater than the desired value.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
@@ -369,15 +369,21 @@ void MainWindow::solveP2()
   double value = -1;
 
   // Calculate by brute force.
-  // TODO: Optimize by breaking if any single resistor or first resistor of
-  // decade is less than the desired value
+  // Optimize by breaking out of loop if we reach a resistor that is
+  // less than the desired value.
   // TODO: Handle case where optimal solution is to leave one resistor open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
-    for (int i1 = 0; i1 < m_seriesSize; i1++) {
+    for (int i1 = m_seriesSize-1; i1 > 0; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
+      if (r1 < m_desired) {
+        break;
+      }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
-        for (int i2 = 0; i2 < m_seriesSize; i2++) {
+        for (int i2 = m_seriesSize-1; i2 > 0; i2--) {
           double r2 = m_series[i2] * exp10(decade2);
+          if (r2 < m_desired) {
+            break;
+          }
           if (r1 == 0 && r2 == 0) {
             continue; // Avoid divide by zero
           }
@@ -412,19 +418,29 @@ void MainWindow::solveP3()
   double value = -1;
 
   // Calculate by brute force.
-  // TODO: Optimize by breaking if any single resistor or first resistor of
-  // decade is less than the desired value
+  // Optimize by breaking out of loop if we reach a resistor that is
+  // less than the desired value.
   // TODO: Handle case where optimal solution is to leave one or two resistors open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
-    for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      qDebug() << 100 * (decade1 - m_firstDecade) / (m_lastDecade - m_firstDecade);
+    for (int i1 = m_seriesSize-1; i1 > 0; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
+      if (r1 < m_desired) {
+        break;
+      }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
-        for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          for (int i2 = m_seriesSize-1; i2 > 0; i2--) {
           double r2 = m_series[i2] * exp10(decade2);
+          if (r2 < m_desired) {
+            break;
+          }
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
-               decade3++) {
-            for (int i3 = 0; i3 < m_seriesSize; i3++) {
+            decade3++) {
+            for (int i3 = m_seriesSize-1; i3 > 0; i3--) {
               double r3 = m_series[i3] * exp10(decade3);
+              if (r3 < m_desired) {
+                break;
+              }
               if (r1 == 0 || r2 == 0 || r3 == 0) {
                 continue; // Avoid divide by zero
               }
