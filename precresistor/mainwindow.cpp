@@ -65,34 +65,34 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::setR1() {
   m_r1 = ui->r1SpinBox->value() *
          multiplier(ui->r1ResistanceComboBox->currentIndex());
-  qDebug() << "_R1 =" << m_r1;
+  // qDebug() << "_R1 =" << m_r1;
 }
 
 void MainWindow::setR2() {
   m_r2 = ui->r2SpinBox->value() *
          multiplier(ui->r2ResistanceComboBox->currentIndex());
-  qDebug() << "_R2 =" << m_r2;
+  // qDebug() << "_R2 =" << m_r2;
 }
 
 void MainWindow::setR3() {
   m_r3 = ui->r3SpinBox->value() *
          multiplier(ui->r3ResistanceComboBox->currentIndex());
-  qDebug() << "_R3 =" << m_r3;
+  // qDebug() << "_R3 =" << m_r3;
 }
 
 void MainWindow::setDesired() {
   m_desired = ui->desiredValueSpinBox->value() *
               multiplier(ui->desiredResistanceComboBox->currentIndex());
-  qDebug() << "Desired =" << m_desired;
+  // qDebug() << "Desired =" << m_desired;
 }
 
 void MainWindow::setResult(double newResult) {
   m_result = newResult;
-  qDebug() << "Result =" << m_result;
+  // qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::setSeries() {
-  qDebug() << "Series =" << ui->standardValuesComboBox->currentIndex();
+  // qDebug() << "Series =" << ui->standardValuesComboBox->currentIndex();
 
   switch (ui->standardValuesComboBox->currentIndex()) {
   case E6:
@@ -137,7 +137,7 @@ void MainWindow::setSeries() {
 // Set controls based on operating mode.
 void MainWindow::setMode() {
   m_mode = ui->modeComboBox->currentIndex();
-  qDebug() << "Mode =" << m_mode;
+  // qDebug() << "Mode =" << m_mode;
 
   switch (m_mode) {
   case S2:
@@ -221,9 +221,9 @@ void MainWindow::calculate() {
   solve();
   QApplication::restoreOverrideCursor();
 
-  qDebug() << ".R1 =" << m_r1;
-  qDebug() << ".R2 =" << m_r2;
-  qDebug() << ".R3 =" << m_r3;
+  qDebug() << "R1 =" << m_r1;
+  qDebug() << "R2 =" << m_r2;
+  qDebug() << "R3 =" << m_r3;
 
   if (m_r1 > 1e6) {
     ui->r1SpinBox->setValue(m_r1 / 1e6);
@@ -319,7 +319,7 @@ void MainWindow::solveS2() {
             bestR1 = r1;
             bestR2 = r2;
             bestDiff = diff;
-            qDebug() << "Best so far is" << r1 << "+" << r2;
+            //qDebug() << "Best so far is" << r1 << "+" << r2;
             // Optimization: stop if exact solution found.
             if (qFuzzyCompare(bestDiff, 0)) {
               qDebug() << "Exact solution found!";
@@ -335,31 +335,43 @@ done:
   m_r1 = bestR1;
   m_r2 = bestR2;
   m_result = bestR1 + bestR2;
-  qDebug() << "=R1 =" << m_r1;
-  qDebug() << "=R2 =" << m_r2;
+  qDebug() << "R1 =" << m_r1;
+  qDebug() << "R2 =" << m_r2;
   qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::solveS3() {
-  /*
-    // Calculate by brute force.
-    // TODO: Optimize by continuing if any single resistor or first resistor of
-    decade is greater than the desired value for (int decade1 = firstDecade;
-    decade1 <= lastDecade; decade1++) { for (int i1 = 0; i1 < size; i1++) { for
-    (int decade2 = firstDecade; decade2 <= lastDecade; decade2++) { for (int i2
-    = 0; i2 < size; i2++) { for (int decade3 = firstDecade; decade3 <=
-    lastDecade; decade3++) { for (int i3 = 0; i3 < size; i3++) { double r1 =
-    series[i1] * exp10(decade1); double r2 = series[i2] * exp10(decade2); double
-    r3 = series[i3] * exp10(decade3); double value = r1 + r2 + r3; double diff =
-    fabs(desiredValue - value); if (diff < bestDiff) { bestR1 = r1; bestR2 = r2;
-                  bestR3 = r3;
-                  bestDiff = diff;
-                  qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
-                  // Optimization: stop if exact solution found.
-                  if (qFuzzyCompare(bestDiff, 0)) {
-                      qDebug() << "Exact solution found!";
-                      goto done;
-                  }
+  double bestR1 = -1;
+  double bestR2 = -1;
+  double bestR3 = -1;
+  double bestDiff = 100e6;
+  double value = -1;
+
+  // Calculate by brute force.
+  // TODO: Optimize by continuing if any single resistor or first resistor of
+  // decade is greater than the desired value
+  for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
+    for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
+        for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
+               decade3++) {
+            for (int i3 = 0; i3 < m_seriesSize; i3++) {
+              double r1 = m_series[i1] * exp10(decade1);
+              double r2 = m_series[i2] * exp10(decade2);
+              double r3 = m_series[i3] * exp10(decade3);
+              value = r1 + r2 + r3;
+              double diff = fabs(m_desired - value);
+              if (diff < bestDiff) {
+                bestR1 = r1;
+                bestR2 = r2;
+                bestR3 = r3;
+                bestDiff = diff;
+                //qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
+                // Optimization: stop if exact solution found.
+                if (qFuzzyCompare(bestDiff, 0)) {
+                  qDebug() << "Exact solution found!";
+                  goto done;
                 }
               }
             }
@@ -367,9 +379,16 @@ void MainWindow::solveS3() {
         }
       }
     }
-
-    done:
-  */
+  }
+done:
+  m_r1 = bestR1;
+  m_r2 = bestR2;
+  m_r3 = bestR3;
+  m_result = bestR1 + bestR2 + bestR3;
+  qDebug() << "R1 =" << m_r1;
+  qDebug() << "R2 =" << m_r2;
+  qDebug() << "R3 =" << m_r3;
+  qDebug() << "Result =" << m_result;
 }
 
 void MainWindow::solveP2() {}
@@ -422,15 +441,19 @@ void MainWindow::about() {
   QMessageBox::about(
       this, tr("About Precresistor"),
       tr("<b>Precision Resistor application by Jeff Tranter.</b><br><br>"
-         "Copyright (C) 2021 by Jeff Tranter &lt;tranter@pobox.com&gt;.<br><br>"
-         "Licensed under the Apache License, Version 2.0 (the \"License\");<br>"
-         "you may not use this file except in compliance with the License.<br>"
+         "Copyright (C) 2021 by Jeff Tranter "
+         "&lt;tranter@pobox.com&gt;.<br><br>"
+         "Licensed under the Apache License, Version 2.0 (the "
+         "\"License\");<br>"
+         "you may not use this file except in compliance with the "
+         "License.<br>"
          "You may obtain a copy of the License at<br><br>"
          "  http://www.apache.org/licenses/LICENSE-2.0<br><br>"
          "Unless required by applicable law or agreed to in writing,<br>"
          "software distributed under the License is distributed on an<br>"
          "\"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF<br>"
          "ANY KIND either express or implied.<br>"
-         "See the License for the specific language governing permissions<br>"
+         "See the License for the specific language governing "
+         "permissions<br>"
          "and limitations under the License."));
 }
