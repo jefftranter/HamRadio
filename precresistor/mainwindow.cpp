@@ -271,14 +271,20 @@ void MainWindow::solveS2() {
   double value = -1;
 
   // Calculate by brute force.
-  // TODO: Optimize by breaking if any single resistor or first resistor of
-  // decade is greater than the desired value
+  // Optimize by breaking out of loop we reach a resistor that is
+  // greater than the desired value.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      double r1 = m_series[i1] * exp10(decade1);
+      if (r1 > m_desired) {
+          break;
+      }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
         for (int i2 = 0; i2 < m_seriesSize; i2++) {
-          double r1 = m_series[i1] * exp10(decade1);
           double r2 = m_series[i2] * exp10(decade2);
+          if (r2 > m_desired) {
+              break;
+          }
           value = r1 + r2;
           double diff = fabs(m_desired - value);
           if (diff < bestDiff) {
@@ -309,18 +315,27 @@ void MainWindow::solveS3() {
   double value = -1;
 
   // Calculate by brute force.
-  // TODO: Optimize by breaking if any single resistor or first resistor of
-  // decade is greater than the desired value
+  // Optimize by breaking out of loop we reach a resistor that is
+  // greater than the desired value.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      double r1 = m_series[i1] * exp10(decade1);
+      if (r1 > m_desired) {
+          break;
+      }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
         for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          double r2 = m_series[i2] * exp10(decade2);
+          if (r2 > m_desired) {
+            break;
+          }
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
                decade3++) {
             for (int i3 = 0; i3 < m_seriesSize; i3++) {
-              double r1 = m_series[i1] * exp10(decade1);
-              double r2 = m_series[i2] * exp10(decade2);
               double r3 = m_series[i3] * exp10(decade3);
+              if (r3 > m_desired) {
+                break;
+              }
               value = r1 + r2 + r3;
               double diff = fabs(m_desired - value);
               if (diff < bestDiff) {
@@ -359,9 +374,9 @@ void MainWindow::solveP2()
   // TODO: Handle case where optimal solution is to leave one resistor open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      double r1 = m_series[i1] * exp10(decade1);
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
         for (int i2 = 0; i2 < m_seriesSize; i2++) {
-          double r1 = m_series[i1] * exp10(decade1);
           double r2 = m_series[i2] * exp10(decade2);
           if (r1 == 0 && r2 == 0) {
             continue; // Avoid divide by zero
@@ -402,13 +417,13 @@ void MainWindow::solveP3()
   // TODO: Handle case where optimal solution is to leave one or two resistors open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      double r1 = m_series[i1] * exp10(decade1);
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
         for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          double r2 = m_series[i2] * exp10(decade2);
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
                decade3++) {
             for (int i3 = 0; i3 < m_seriesSize; i3++) {
-              double r1 = m_series[i1] * exp10(decade1);
-              double r2 = m_series[i2] * exp10(decade2);
               double r3 = m_series[i3] * exp10(decade3);
               if (r1 == 0 || r2 == 0 || r3 == 0) {
                 continue; // Avoid divide by zero
@@ -452,13 +467,13 @@ void MainWindow::solveSP3A()
   // TODO: Handle case where optimal solution is to leave one or two resistors open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      double r1 = m_series[i1] * exp10(decade1);
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
         for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          double r2 = m_series[i2] * exp10(decade2);
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
                decade3++) {
             for (int i3 = 0; i3 < m_seriesSize; i3++) {
-              double r1 = m_series[i1] * exp10(decade1);
-              double r2 = m_series[i2] * exp10(decade2);
               double r3 = m_series[i3] * exp10(decade3);
               if (r1 == 0 && r2 == 0 && r3 == 0) {
                   continue; // Avoid divide by zero
@@ -502,13 +517,13 @@ void MainWindow::solveSP3B()
   // TODO: Handle case where optimal solution is to leave one or two resistors open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      double r1 = m_series[i1] * exp10(decade1);
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
         for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          double r2 = m_series[i2] * exp10(decade2);
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
                decade3++) {
             for (int i3 = 0; i3 < m_seriesSize; i3++) {
-              double r1 = m_series[i1] * exp10(decade1);
-              double r2 = m_series[i2] * exp10(decade2);
               double r3 = m_series[i3] * exp10(decade3);
               if (r2 == 0 && r3 == 0) {
                   continue; // Avoid divide by zero
