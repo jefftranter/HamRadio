@@ -1,4 +1,4 @@
-Optimize algorithm for finding solution.
+Add progress indication in window footer.
 
 Future:
 Show multiple solutions.

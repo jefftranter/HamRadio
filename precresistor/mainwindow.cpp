@@ -482,15 +482,21 @@ void MainWindow::solveSP3A()
   // decade is greater than or less than the desired value, depending position.
   // TODO: Handle case where optimal solution is to leave one or two resistors open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
-    for (int i1 = 0; i1 < m_seriesSize; i1++) {
+    for (int i1 = m_seriesSize-1; i1 > 0; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
-        for (int i2 = 0; i2 < m_seriesSize; i2++) {
+        for (int i2 = m_seriesSize-1; i2 > 0; i2--) {
           double r2 = m_series[i2] * exp10(decade2);
+          if (r1 + r2 < m_desired) {
+            break;
+          }
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
                decade3++) {
-            for (int i3 = 0; i3 < m_seriesSize; i3++) {
+            for (int i3 = m_seriesSize-1; i3 > 0; i3--) {
               double r3 = m_series[i3] * exp10(decade3);
+              if (r3 < m_desired) {
+                break;
+              }
               if (r1 == 0 && r2 == 0 && r3 == 0) {
                   continue; // Avoid divide by zero
               }
@@ -528,21 +534,27 @@ void MainWindow::solveSP3B()
   double value = -1;
 
   // Calculate by brute force.
-  // TODO: Optimize by breaking if any single resistor or first resistor of
-  // decade is greater than or less than the desired value, depending position.
+  // Optimize by breaking if any single resistor or first resistor of
+  // decade is greater than or less than the desired value, depending on position.
   // TODO: Handle case where optimal solution is to leave one or two resistors open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
-    for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      for (int i1 = 0; i1 < m_seriesSize; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
+      if (r1 > m_desired) {
+        break;
+      }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
-        for (int i2 = 0; i2 < m_seriesSize; i2++) {
+        for (int i2 = m_seriesSize-1; i2 > 0; i2--) {
           double r2 = m_series[i2] * exp10(decade2);
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
                decade3++) {
-            for (int i3 = 0; i3 < m_seriesSize; i3++) {
+            for (int i3 = m_seriesSize-1; i3 > 0; i3--) {
               double r3 = m_series[i3] * exp10(decade3);
               if (r2 == 0 && r3 == 0) {
                   continue; // Avoid divide by zero
+              }
+              if ((r2 * r2) / (r2 + r3) > m_desired) {
+                break;
               }
               value = r1 + (r2 * r3) / (r2 + r3);
               double diff = fabs(m_desired - value);
