@@ -392,9 +392,108 @@ done:
   qDebug() << "Result =" << m_result;
 }
 
-void MainWindow::solveP2() {}
+void MainWindow::solveP2()
+{
+  double bestR1 = -1;
+  double bestR2 = -1;
+  double bestDiff = 100e6;
+  double value = -1;
 
-void MainWindow::solveP3() {}
+  // Calculate by brute force.
+  // TODO: Optimize by breaking if any single resistor or first resistor of
+  // decade is less than the desired value
+  // TODO: Handle case where optimal solution is to leave one resistor open.
+  for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
+    for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
+        for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          double r1 = m_series[i1] * exp10(decade1);
+          double r2 = m_series[i2] * exp10(decade2);
+          if (r1 == 0 && r2 == 0) {
+            continue;
+          }
+          value = (r1 * r2) / (r1 + r2);
+          double diff = fabs(m_desired - value);
+          if (diff < bestDiff) {
+            bestR1 = r1;
+            bestR2 = r2;
+            bestDiff = diff;
+            //qDebug() << "Best so far is" << r1 << "+" << r2;
+            // Optimization: stop if exact solution found.
+            if (qFuzzyCompare(bestDiff, 0)) {
+              qDebug() << "Exact solution found!";
+              goto done;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  done:
+  m_r1 = bestR1;
+  m_r2 = bestR2;
+  m_result = (bestR1 * bestR2) / (bestR1 + bestR2);
+  qDebug() << "R1 =" << m_r1;
+  qDebug() << "R2 =" << m_r2;
+  qDebug() << "Result =" << m_result;
+}
+
+void MainWindow::solveP3()
+{
+  double bestR1 = -1;
+  double bestR2 = -1;
+  double bestR3 = -1;
+  double bestDiff = 100e6;
+  double value = -1;
+
+  // Calculate by brute force.
+  // TODO: Optimize by breaking if any single resistor or first resistor of
+  // decade is less than the desired value
+  // TODO: Handle case where optimal solution is to leave one or two resistors open.
+  for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
+    for (int i1 = 0; i1 < m_seriesSize; i1++) {
+      for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
+        for (int i2 = 0; i2 < m_seriesSize; i2++) {
+          for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
+               decade3++) {
+            for (int i3 = 0; i3 < m_seriesSize; i3++) {
+              double r1 = m_series[i1] * exp10(decade1);
+              double r2 = m_series[i2] * exp10(decade2);
+              double r3 = m_series[i3] * exp10(decade3);
+              if (r1 == 0 || r2 == 0 || r3 == 0) {
+                continue;
+              }
+              value = 1 / (1 / r1 + 1 / r2 + 1 / r3);
+              double diff = fabs(m_desired - value);
+              if (diff < bestDiff) {
+                bestR1 = r1;
+                bestR2 = r2;
+                bestR3 = r3;
+                bestDiff = diff;
+                //qDebug() << "Best so far is" << r1 << "+" << r2 << "+" << r3;
+                // Optimization: stop if exact solution found.
+                if (qFuzzyCompare(bestDiff, 0)) {
+                  qDebug() << "Exact solution found!";
+                  goto done;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+done:
+  m_r1 = bestR1;
+  m_r2 = bestR2;
+  m_r3 = bestR3;
+  m_result = 1 / (1 / bestR1 + 1 / bestR2 + 1 / bestR3);
+  qDebug() << "R1 =" << m_r1;
+  qDebug() << "R2 =" << m_r2;
+  qDebug() << "R3 =" << m_r3;
+  qDebug() << "Result =" << m_result;
+}
 
 void MainWindow::solveSP3A() {}
 
