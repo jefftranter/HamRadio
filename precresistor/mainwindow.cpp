@@ -61,9 +61,7 @@ void MainWindow::setDesired() {
               multiplier(ui->desiredResistanceComboBox->currentIndex());
 }
 
-void MainWindow::setResult(double newResult) {
-  m_result = newResult;
-}
+void MainWindow::setResult(double newResult) { m_result = newResult; }
 
 void MainWindow::setSeries() {
 
@@ -172,8 +170,7 @@ int MainWindow::multiplier(int units) {
 }
 
 // Return optimal scaled value based on value.
-double MainWindow::optimalScale(double val)
-{
+double MainWindow::optimalScale(double val) {
   if (val >= 1e6) {
     return val / 1e6;
   } else if (val >= 1e3) {
@@ -183,10 +180,8 @@ double MainWindow::optimalScale(double val)
   }
 }
 
-
 // Return optimal units for value
-int MainWindow::optimalUnits(double val)
-{
+int MainWindow::optimalUnits(double val) {
   if (val >= 1e6) {
     return MEGOHMS;
   } else if (val >= 1e3) {
@@ -277,13 +272,13 @@ void MainWindow::solveS2() {
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
       double r1 = m_series[i1] * exp10(decade1);
       if (r1 > m_desired) {
-          break;
+        break;
       }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
         for (int i2 = 0; i2 < m_seriesSize; i2++) {
           double r2 = m_series[i2] * exp10(decade2);
           if (r2 > m_desired) {
-              break;
+            break;
           }
           value = r1 + r2;
           double diff = fabs(m_desired - value);
@@ -318,10 +313,14 @@ void MainWindow::solveS3() {
   // Optimize by breaking out of loop if we reach a resistor that is
   // greater than the desired value.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
+    QString s = QString::number(100 * (decade1 - m_firstDecade) /
+                                (m_lastDecade - m_firstDecade));
+    statusBar()->showMessage(tr("%1% completed").arg(s));
+    qApp->processEvents();
     for (int i1 = 0; i1 < m_seriesSize; i1++) {
       double r1 = m_series[i1] * exp10(decade1);
       if (r1 > m_desired) {
-          break;
+        break;
       }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
         for (int i2 = 0; i2 < m_seriesSize; i2++) {
@@ -355,14 +354,14 @@ void MainWindow::solveS3() {
     }
   }
 done:
+  statusBar()->clearMessage();
   m_r1 = bestR1;
   m_r2 = bestR2;
   m_r3 = bestR3;
   m_result = bestR1 + bestR2 + bestR3;
 }
 
-void MainWindow::solveP2()
-{
+void MainWindow::solveP2() {
   double bestR1 = -1;
   double bestR2 = -1;
   double bestDiff = 100e6;
@@ -373,13 +372,13 @@ void MainWindow::solveP2()
   // less than the desired value.
   // TODO: Handle case where optimal solution is to leave one resistor open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
-    for (int i1 = m_seriesSize-1; i1 > 0; i1--) {
+    for (int i1 = m_seriesSize - 1; i1 > 0; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
       if (r1 < m_desired) {
         break;
       }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
-        for (int i2 = m_seriesSize-1; i2 > 0; i2--) {
+        for (int i2 = m_seriesSize - 1; i2 > 0; i2--) {
           double r2 = m_series[i2] * exp10(decade2);
           if (r2 < m_desired) {
             break;
@@ -403,14 +402,13 @@ void MainWindow::solveP2()
     }
   }
 
-  done:
+done:
   m_r1 = bestR1;
   m_r2 = bestR2;
   m_result = (bestR1 * bestR2) / (bestR1 + bestR2);
 }
 
-void MainWindow::solveP3()
-{
+void MainWindow::solveP3() {
   double bestR1 = -1;
   double bestR2 = -1;
   double bestR3 = -1;
@@ -420,23 +418,27 @@ void MainWindow::solveP3()
   // Calculate by brute force.
   // Optimize by breaking out of loop if we reach a resistor that is
   // less than the desired value.
-  // TODO: Handle case where optimal solution is to leave one or two resistors open.
+  // TODO: Handle case where optimal solution is to leave one or two resistors
+  // open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
-      qDebug() << 100 * (decade1 - m_firstDecade) / (m_lastDecade - m_firstDecade);
-    for (int i1 = m_seriesSize-1; i1 > 0; i1--) {
+    QString s = QString::number(100 * (decade1 - m_firstDecade) /
+                                (m_lastDecade - m_firstDecade));
+    statusBar()->showMessage(tr("%1% completed").arg(s));
+    qApp->processEvents();
+    for (int i1 = m_seriesSize - 1; i1 > 0; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
       if (r1 < m_desired) {
         break;
       }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
-          for (int i2 = m_seriesSize-1; i2 > 0; i2--) {
+        for (int i2 = m_seriesSize - 1; i2 > 0; i2--) {
           double r2 = m_series[i2] * exp10(decade2);
           if (r2 < m_desired) {
             break;
           }
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
-            decade3++) {
-            for (int i3 = m_seriesSize-1; i3 > 0; i3--) {
+               decade3++) {
+            for (int i3 = m_seriesSize - 1; i3 > 0; i3--) {
               double r3 = m_series[i3] * exp10(decade3);
               if (r3 < m_desired) {
                 break;
@@ -463,14 +465,14 @@ void MainWindow::solveP3()
     }
   }
 done:
+  statusBar()->clearMessage();
   m_r1 = bestR1;
   m_r2 = bestR2;
   m_r3 = bestR3;
   m_result = 1 / (1 / bestR1 + 1 / bestR2 + 1 / bestR3);
 }
 
-void MainWindow::solveSP3A()
-{
+void MainWindow::solveSP3A() {
   double bestR1 = -1;
   double bestR2 = -1;
   double bestR3 = -1;
@@ -480,25 +482,30 @@ void MainWindow::solveSP3A()
   // Calculate by brute force.
   // TODO: Optimize by breaking if any single resistor or first resistor of
   // decade is greater than or less than the desired value, depending position.
-  // TODO: Handle case where optimal solution is to leave one or two resistors open.
+  // TODO: Handle case where optimal solution is to leave one or two resistors
+  // open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
-    for (int i1 = m_seriesSize-1; i1 > 0; i1--) {
+    QString s = QString::number(100 * (decade1 - m_firstDecade) /
+                                (m_lastDecade - m_firstDecade));
+    statusBar()->showMessage(tr("%1% completed").arg(s));
+    qApp->processEvents();
+    for (int i1 = m_seriesSize - 1; i1 > 0; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
-        for (int i2 = m_seriesSize-1; i2 > 0; i2--) {
+        for (int i2 = m_seriesSize - 1; i2 > 0; i2--) {
           double r2 = m_series[i2] * exp10(decade2);
           if (r1 + r2 < m_desired) {
             break;
           }
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
                decade3++) {
-            for (int i3 = m_seriesSize-1; i3 > 0; i3--) {
+            for (int i3 = m_seriesSize - 1; i3 > 0; i3--) {
               double r3 = m_series[i3] * exp10(decade3);
               if (r3 < m_desired) {
                 break;
               }
               if (r1 == 0 && r2 == 0 && r3 == 0) {
-                  continue; // Avoid divide by zero
+                continue; // Avoid divide by zero
               }
               value = ((r1 + r2) * r3) / (r1 + r2 + r3);
               double diff = fabs(m_desired - value);
@@ -519,14 +526,14 @@ void MainWindow::solveSP3A()
     }
   }
 done:
+  statusBar()->clearMessage();
   m_r1 = bestR1;
   m_r2 = bestR2;
   m_r3 = bestR3;
   m_result = ((bestR1 + bestR2) * bestR3) / (bestR1 + bestR2 + bestR3);
 }
 
-void MainWindow::solveSP3B()
-{
+void MainWindow::solveSP3B() {
   double bestR1 = -1;
   double bestR2 = -1;
   double bestR3 = -1;
@@ -535,23 +542,29 @@ void MainWindow::solveSP3B()
 
   // Calculate by brute force.
   // Optimize by breaking if any single resistor or first resistor of
-  // decade is greater than or less than the desired value, depending on position.
-  // TODO: Handle case where optimal solution is to leave one or two resistors open.
+  // decade is greater than or less than the desired value, depending on
+  // position.
+  // TODO: Handle case where optimal solution is to leave one or two resistors
+  // open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
-      for (int i1 = 0; i1 < m_seriesSize; i1--) {
+    QString s = QString::number(100 * (decade1 - m_firstDecade) /
+                                (m_lastDecade - m_firstDecade));
+    statusBar()->showMessage(tr("%1% completed").arg(s));
+    qApp->processEvents();
+    for (int i1 = 0; i1 < m_seriesSize; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
       if (r1 > m_desired) {
         break;
       }
       for (int decade2 = m_firstDecade; decade2 <= m_lastDecade; decade2++) {
-        for (int i2 = m_seriesSize-1; i2 > 0; i2--) {
+        for (int i2 = m_seriesSize - 1; i2 > 0; i2--) {
           double r2 = m_series[i2] * exp10(decade2);
           for (int decade3 = m_firstDecade; decade3 <= m_lastDecade;
                decade3++) {
-            for (int i3 = m_seriesSize-1; i3 > 0; i3--) {
+            for (int i3 = m_seriesSize - 1; i3 > 0; i3--) {
               double r3 = m_series[i3] * exp10(decade3);
               if (r2 == 0 && r3 == 0) {
-                  continue; // Avoid divide by zero
+                continue; // Avoid divide by zero
               }
               if ((r2 * r2) / (r2 + r3) > m_desired) {
                 break;
@@ -575,6 +588,7 @@ void MainWindow::solveSP3B()
     }
   }
 done:
+  statusBar()->clearMessage();
   m_r1 = bestR1;
   m_r2 = bestR2;
   m_r3 = bestR3;
