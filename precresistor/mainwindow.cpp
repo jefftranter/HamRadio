@@ -383,7 +383,7 @@ void MainWindow::solveP2() {
           if (r2 < m_desired) {
             break;
           }
-          if (r1 == 0 && r2 == 0) {
+          if (qFuzzyCompare(r1, 0) && qFuzzyCompare(r2, 0)) {
             continue; // Avoid divide by zero
           }
           value = (r1 * r2) / (r1 + r2);
@@ -443,7 +443,7 @@ void MainWindow::solveP3() {
               if (r3 < m_desired) {
                 break;
               }
-              if (r1 == 0 || r2 == 0 || r3 == 0) {
+              if (qFuzzyCompare(r1, 0) || qFuzzyCompare(r2, 0) || qFuzzyCompare(r3, 0)) {
                 continue; // Avoid divide by zero
               }
               value = 1 / (1 / r1 + 1 / r2 + 1 / r3);
@@ -504,7 +504,7 @@ void MainWindow::solveSP3A() {
               if (r3 < m_desired) {
                 break;
               }
-              if (r1 == 0 && r2 == 0 && r3 == 0) {
+              if (qFuzzyCompare(r1, 0) && qFuzzyCompare(r2, 0) && qFuzzyCompare(r3, 0)) {
                 continue; // Avoid divide by zero
               }
               value = ((r1 + r2) * r3) / (r1 + r2 + r3);
@@ -563,7 +563,7 @@ void MainWindow::solveSP3B() {
                decade3++) {
             for (int i3 = m_seriesSize - 1; i3 > 0; i3--) {
               double r3 = m_series[i3] * exp10(decade3);
-              if (r2 == 0 && r3 == 0) {
+              if (qFuzzyCompare(r2, 0) && qFuzzyCompare(r3, 0)) {
                 continue; // Avoid divide by zero
               }
               if ((r2 * r2) / (r2 + r3) > m_desired) {
