@@ -245,6 +245,30 @@ void MainWindow::calculate() {
   }
   ui->actualValueLabel->setText(s);
 
+  bool zero = false;
+  switch (m_mode) {
+  case S2:
+  case P2:
+    if (qFuzzyCompare(m_r1, 0) || qFuzzyCompare(m_r2, 0))
+      zero = true;
+    break;
+  case S3:
+  case P3:
+  case SP3A:
+  case SP3B:
+    if (qFuzzyCompare(m_r1, 0) || qFuzzyCompare(m_r2, 0) ||
+        qFuzzyCompare(m_r3, 0))
+      zero = true;
+    break;
+  }
+
+  if (zero) {
+    QMessageBox::warning(
+        this, tr("Zero Value Resistor"),
+        tr("One or more resistors have a value of zero. You "
+           "way want to omit the resistor(s) from the circuit."));
+  }
+
   if (qFuzzyCompare(m_r1, m_series[m_seriesSize - 1] * exp10(m_lastDecade)) ||
       qFuzzyCompare(m_r2, m_series[m_seriesSize - 1] * exp10(m_lastDecade)) ||
       qFuzzyCompare(m_r3, m_series[m_seriesSize - 1] * exp10(m_lastDecade))) {
