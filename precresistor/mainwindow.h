@@ -1,6 +1,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+/*
+ *
+ * A Qt-based application for calculating values of precision resistors using
+ * several standard values in parallel and/or series.
+ *
+ * Requires the Qt framework. Tested with Qt 5.11.3.
+ *
+ * Jeff Tranter <tranter@pobox.cm>
+ *
+ */
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE

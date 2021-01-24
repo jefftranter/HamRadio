@@ -1,6 +1,16 @@
+/*
+ *
+ * A Qt-based application for calculating values of precision resistors using
+ * several standard values in parallel and/or series.
+ *
+ * Requires the Qt framework. Tested with Qt 5.11.3.
+ *
+ * Jeff Tranter <tranter@pobox.cm>
+ *
+ */
+
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include <QDebug>
 #include <QMessageBox>
 #include <QString>
 #include <math.h>
@@ -234,6 +244,16 @@ void MainWindow::calculate() {
     s += tr(" (error %1%)</b>").arg(QString::number(100 * error, 'g', 2));
   }
   ui->actualValueLabel->setText(s);
+
+  if (qFuzzyCompare(m_r1, m_series[m_seriesSize - 1] * exp10(m_lastDecade)) ||
+      qFuzzyCompare(m_r2, m_series[m_seriesSize - 1] * exp10(m_lastDecade)) ||
+      qFuzzyCompare(m_r3, m_series[m_seriesSize - 1] * exp10(m_lastDecade))) {
+    QMessageBox::warning(
+        this, tr("Upper Limit Reached"),
+        tr("One or more resistors are the highest value in the series. You "
+           "way want to omit the resistor(s) from the circuit."));
+    return;
+  }
 }
 
 void MainWindow::solve() {
@@ -370,7 +390,6 @@ void MainWindow::solveP2() {
   // Calculate by brute force.
   // Optimize by breaking out of loop if we reach a resistor that is
   // less than the desired value.
-  // TODO: Handle case where optimal solution is to leave one resistor open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     for (int i1 = m_seriesSize - 1; i1 > 0; i1--) {
       double r1 = m_series[i1] * exp10(decade1);
@@ -418,8 +437,6 @@ void MainWindow::solveP3() {
   // Calculate by brute force.
   // Optimize by breaking out of loop if we reach a resistor that is
   // less than the desired value.
-  // TODO: Handle case where optimal solution is to leave one or two resistors
-  // open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     QString s = QString::number(100 * (decade1 - m_firstDecade) /
                                 (m_lastDecade - m_firstDecade));
@@ -443,7 +460,8 @@ void MainWindow::solveP3() {
               if (r3 < m_desired) {
                 break;
               }
-              if (qFuzzyCompare(r1, 0) || qFuzzyCompare(r2, 0) || qFuzzyCompare(r3, 0)) {
+              if (qFuzzyCompare(r1, 0) || qFuzzyCompare(r2, 0) ||
+                  qFuzzyCompare(r3, 0)) {
                 continue; // Avoid divide by zero
               }
               value = 1 / (1 / r1 + 1 / r2 + 1 / r3);
@@ -482,8 +500,6 @@ void MainWindow::solveSP3A() {
   // Calculate by brute force.
   // Optimize by breaking if any single resistor or first resistor of
   // decade is greater than or less than the desired value, depending position.
-  // TODO: Handle case where optimal solution is to leave one or two resistors
-  // open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     QString s = QString::number(100 * (decade1 - m_firstDecade) /
                                 (m_lastDecade - m_firstDecade));
@@ -504,7 +520,8 @@ void MainWindow::solveSP3A() {
               if (r3 < m_desired) {
                 break;
               }
-              if (qFuzzyCompare(r1, 0) && qFuzzyCompare(r2, 0) && qFuzzyCompare(r3, 0)) {
+              if (qFuzzyCompare(r1, 0) && qFuzzyCompare(r2, 0) &&
+                  qFuzzyCompare(r3, 0)) {
                 continue; // Avoid divide by zero
               }
               value = ((r1 + r2) * r3) / (r1 + r2 + r3);
@@ -544,8 +561,6 @@ void MainWindow::solveSP3B() {
   // Optimize by breaking if any single resistor or first resistor of
   // decade is greater than or less than the desired value, depending on
   // position.
-  // TODO: Handle case where optimal solution is to leave one or two resistors
-  // open.
   for (int decade1 = m_firstDecade; decade1 <= m_lastDecade; decade1++) {
     QString s = QString::number(100 * (decade1 - m_firstDecade) /
                                 (m_lastDecade - m_firstDecade));
