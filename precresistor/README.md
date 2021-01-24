@@ -11,3 +11,8 @@ commands like the following (on Linux):
     cmake ..
     make
     ./precresistor
+
+It can also be build using qmake using the provided project file, e.g.
+
+    qmake
+    make
