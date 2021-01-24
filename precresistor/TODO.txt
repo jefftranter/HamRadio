@@ -1,5 +1,5 @@
-
 Future:
 Show multiple solutions.
+Allow user to specify values of some resistors.
 Option to optimize for power dissipation?
 Localization.

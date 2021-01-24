@@ -480,7 +480,7 @@ void MainWindow::solveSP3A() {
   double value = -1;
 
   // Calculate by brute force.
-  // TODO: Optimize by breaking if any single resistor or first resistor of
+  // Optimize by breaking if any single resistor or first resistor of
   // decade is greater than or less than the desired value, depending position.
   // TODO: Handle case where optimal solution is to leave one or two resistors
   // open.

@@ -1,7 +1,7 @@
-A Qt-based applicatons for calculating values of precision resistors
-using several standard values in parallel or series.
+A Qt-based application for calculating values of precision resistors
+using several standard values in parallel and/or series.
 
-Requires the Qt framework.
+Requires the Qt framework. Test with Qt 5.11.3.
 
 You can build and run it with the Qt Creator IDE or manually using
 commands like the following (on Linux):
@@ -11,5 +11,3 @@ commands like the following (on Linux):
     cmake ..
     make
     ./precresistor
-
-Still a work in progress.
