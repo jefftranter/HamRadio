@@ -6,7 +6,7 @@
 
 /*****
    Purpose: ISR to read rotary encoder1
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void encoder1ISR() {
@@ -24,7 +24,7 @@ void encoder1ISR() {
         en1State = 1;
       }
       if (en1State == 1) {
-        freqOutA = freqOutA +  eCounter1 * freqMult ;
+        freqOutA = freqOutA + eCounter1 * freqMult;
         freqFormat(freqOutA);
         tft.fillRect(79, 188, 158, 36, TFT_BLACK);
         tft.setFreeFont(FS18);
@@ -41,7 +41,7 @@ void encoder1ISR() {
 
 /*****
    Purpose: ISR to read rotary encoder1 switch
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void encoderSWISR() {
@@ -52,7 +52,7 @@ void encoderSWISR() {
 
 /*****
    Purpose: ISR to read rotary encoder2
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void encoder2ISR() {
@@ -81,7 +81,7 @@ void encoder2ISR() {
         tft.setFreeFont(FS18);
         tft.setTextColor(TFT_GREEN, TFT_BLACK);
         tft.setCursor(80, 218, 2);
-        freqOutA = freqOutA +  kCounter2 * freqMult / 10 ;
+        freqOutA = freqOutA +  kCounter2 * freqMult / 10;
         freqFormat(freqOutA);
         tft.print(final2);
         sendFrequency(freqOutA);

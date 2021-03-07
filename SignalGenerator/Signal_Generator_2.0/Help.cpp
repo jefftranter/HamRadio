@@ -5,7 +5,7 @@
 
 /*****
    Purpose: On-screen Help File
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void drawHelp() {

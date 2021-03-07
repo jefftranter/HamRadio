@@ -4,7 +4,7 @@
 #include <Arduino.h>
 /*****
    Purpose: set 50 ohm attenuator: 0,-10dB ,-20dB, -30dB
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void attnSelect(){

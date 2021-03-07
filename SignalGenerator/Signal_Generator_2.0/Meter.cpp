@@ -10,7 +10,7 @@
 // #########################################################################
 /*****
   Purpose: Draw on-screen analog meter
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void analogMeter()
@@ -105,7 +105,7 @@ void analogMeter()
 // #########################################################################
 /*****
   Purpose: Plot on-screen analog meter needle
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void plotNeedle(int value1, byte ms_delay)
@@ -170,7 +170,7 @@ void plotNeedle(int value1, byte ms_delay)
 }
 /*****
   Purpose: Calibrate Log Amp 1 Freq A
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void logAmpCalibrate() {
@@ -199,7 +199,7 @@ void logAmpCalibrate() {
 }
 /*****
    Purpose: Select which output Encoder will change: A or B
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void selectMeterInput() {

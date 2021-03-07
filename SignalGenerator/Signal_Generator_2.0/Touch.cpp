@@ -5,7 +5,7 @@
 
 /*****
   Purpose: Calibrate Touch Screen
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void touch_calibrate()
@@ -14,7 +14,7 @@ void touch_calibrate()
   uint8_t calDataOK = 0;
   // check file system exists
   if (!SPIFFS.begin()) {
-    //Serial.println("Formating file system");
+    //Serial.println("Formatting file system");
     SPIFFS.format();
     SPIFFS.begin();
   }

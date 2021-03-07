@@ -5,7 +5,7 @@
 
 /*****
   Purpose: Set Page Flag
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void setPageFlag(){
@@ -38,7 +38,7 @@ void setPageFlag(){
 }
 /*****
   Purpose: Draw Main Menu Buttons
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void drawMainMenu() {
@@ -55,7 +55,7 @@ void drawMainMenu() {
 
 /*****
   Purpose: Draw Freq A & B Buttons
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void drawFreqButtons() {
@@ -69,7 +69,7 @@ void drawFreqButtons() {
 
 /*****
   Purpose: Select Menu options by button press
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void selectMainMenu() {
@@ -129,7 +129,7 @@ void selectMainMenu() {
 }
 /*****
   Purpose: Press Freq A or FreqB to set output value to DDS or DDS2 from Keypad display
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void setFreq_A_B() {

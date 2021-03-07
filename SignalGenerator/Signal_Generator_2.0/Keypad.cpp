@@ -8,7 +8,7 @@ char *multLabel[] = {"   Hz", "  10Hz", "  100Hz", "  KHz", " 10KHz", "100KHz", 
 
 /*****
    Purpose: Read Number Buffer charaters and change to Long
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void setOutputFreq() {
@@ -17,7 +17,7 @@ void setOutputFreq() {
 
 /*****
    Purpose: Read Keypad values and set char array NumbeBuffer
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void readKeyPad() {
@@ -109,7 +109,7 @@ void readKeyPad() {
 
 /*****
   Purpose: Draw on-screen numeric keypad
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void drawKeypad()
@@ -141,7 +141,7 @@ void drawKeypad()
 
 /*****
   Purpose: Display Keypad selection in Keypad display
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void displayKbdOut() {
@@ -160,7 +160,7 @@ void displayKbdOut() {
 
 /*****
   Purpose: Format input Long to comma separated Char
-  Paramter list: long freqToFormat
+  Parameter list: long freqToFormat
   Return value:  final2[final_length];
 *****/
 char freqFormat(long freqToFormat) {
@@ -189,7 +189,7 @@ char freqFormat(long freqToFormat) {
 
 /*****
   Purpose: Clear Freq Display
-  Paramter list:
+  Parameter list:
   Return value:
 *****/
 void ClrFreqDisplay()

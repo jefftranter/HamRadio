@@ -5,7 +5,7 @@
 
 /*****
   Purpose: Start Freq A sweep
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void runSweep() {
@@ -35,7 +35,7 @@ void runSweep() {
 
 /*****
   Purpose: Set Sweep Parameters from keypad input
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void setSweep() {   //============================  setFreq_A_B
@@ -113,7 +113,7 @@ void setSweep() {   //============================  setFreq_A_B
 
 /*****
   Purpose: Draw Sweep Menu buttons
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void sweepMenu() {

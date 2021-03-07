@@ -10,7 +10,7 @@
       Select optional Digi Mode
       Set FM modulation Freq Hz
       Set FM deviation Hz
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void modulationPage() {

@@ -1,3 +1,5 @@
+#define TOUCH_CS
+
 #include "Free_Fonts.h" // Include the header file attached to this sketch
 #include "FS.h"
 #include <TFT_eSPI.h> // https://github.com/Bodmer/TFT_eSPI  Hardware-specific library
@@ -12,7 +14,7 @@ extern byte LOAD;
 extern byte CLOCK; 
 extern byte DATA;
 
-#define DATA2  17  ///< SPI Data pin number AD9388
+#define DATA2  17  ///< SPI Data pin number AD9833
 #define CLK2   14  ///< SPI Clock pin number
 #define FSYNC 16  ///< SPI Load pin number (FSYNC in AD9833 usage)
 #define KEY_X 35 // Centre of key Keypad start position, key sizes and spacing
@@ -26,7 +28,7 @@ extern byte DATA;
 #define LABEL2_FONT &FreeSansBold12pt7b    // Key label font 2
 #define DISP_X 1// Numeric display box size and location
 #define DISP_Y 10
-#define DISP_W 8
+#define DISP_W 198
 #define DISP_H 50
 #define DISP_TSIZE 3
 #define DISP_TCOLOR TFT_CYAN

@@ -5,7 +5,7 @@
 
 /*****
    Purpose: Send freq value to AD9851
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void sendFrequency(unsigned long frequency)
@@ -25,7 +25,7 @@ void sendFrequency(unsigned long frequency)
 }
 /*****
    Purpose: Utility for AD9851
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void byte_out(unsigned char byte)
@@ -42,7 +42,7 @@ void byte_out(unsigned char byte)
 }
 /*****
    Purpose: Utility for AD9851
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void outOne()
@@ -54,7 +54,7 @@ void outOne()
 }
 /*****
    Purpose: Utility for AD9851
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void outZero()

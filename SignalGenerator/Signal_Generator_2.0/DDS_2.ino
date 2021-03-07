@@ -4,7 +4,7 @@
 #include <Arduino.h>
 /*****
    Purpose: Set Frequency for AD9833 DDS
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void set_DDS2() {
@@ -16,7 +16,7 @@ void set_DDS2() {
 
 /*****
    Purpose: Select Function Mode for AD9833 DDS
-  Paramter list: void
+  Parameter list: void
   Return value:  void
 *****/
 void selectDDS2Function() { //===== DDS Function Selection =======

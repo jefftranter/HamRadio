@@ -1,3 +1,4 @@
+//                            compiled with DOIT ESP32 Devkit V1
 #ifndef BEENHERE
 #include "SigGen.h"
 #endif
@@ -23,7 +24,7 @@ uint32_t updateTime = 0;       // time for next update
 #define TFT_GREY 0x5AEB
 #define DDS_CLOCK 180000000  //set DDS AD9851 clock
 
-//DDS 9388 Instance and parameters
+//DDS 9833 Instance and parameters
 MD_AD9833  AD_DDS2(DATA2, CLK2, FSYNC); // Arbitrary SPI pins
 MD_AD9833::channel_t chan;
 MD_AD9833::mode_t mode;
@@ -194,7 +195,7 @@ void setup()
   analogSetPinAttenuation(35, ADC_6db);
   pinMode (27, OUTPUT); // sets pin 27 as OUTPUT
 
-  pinMode (DATA, OUTPUT); // sets pin 10 as OUPUT
+  pinMode (DATA, OUTPUT); // sets pin 10 as OUTPUT
   pinMode (CLOCK, OUTPUT); // sets pin 9 as OUTPUT
   pinMode (LOAD, OUTPUT); // sets pin 8 as OUTPUT
 
@@ -206,11 +207,11 @@ void setup()
 
   attachInterrupt(ENCODER2PINA, encoder2ISR, CHANGE);
   attachInterrupt(ENCODER2PINB, encoder2ISR, CHANGE);
-Serial.println("In Setup");
+
   AD_DDS2.begin();  //AD9833 init
   chan = MD_AD9833::CHAN_0;
   AD_DDS2.setFrequency(chan, 5000);   //set_DDS2();
-  sendFrequency(2000UL);
+
   Splash();
   updateTime = millis(); // Next update time
   drawHome();
@@ -220,10 +221,11 @@ Serial.println("In Setup");
   mode = MD_AD9833::MODE_SINE;
   AD_DDS2.setMode(mode);
   meterFlag1 = 0;
-  freqMult = 100;
+  freqMult = 1000000L;
   selectPageFlag = 0; //start with home (Main) page
   span = 10000;
-  sendFrequency(2000000UL);
+  freqOutA = 2000000UL;
+  sendFrequency(freqOutA);
 }
 
 void loop()
